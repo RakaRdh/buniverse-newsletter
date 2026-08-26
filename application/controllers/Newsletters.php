@@ -1,0 +1,310 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Newsletters extends Admin_Controller {
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('Newsletter_model');
+        $this->load->model('Newsletter_article_model');
+        $this->load->model('Market_stat_model');
+    }
+
+    public function index()
+    {
+        $data['newsletters'] = $this->Newsletter_model->get_all();
+        $data['admin'] = $this->admin;
+        $this->load->view('admin/newsletter_list', $data);
+    }
+
+    public function templates()
+    {
+        $data['title'] = 'Preview Templates';
+        $data['admin'] = $this->admin;
+        $this->load->view('admin/templates_preview', $data);
+    }
+
+    public function create()
+    {
+        redirect('newsletters/add/beritasatu');
+    }
+
+    public function add($portal = 'beritasatu')
+    {
+        $allowed_portals = ['beritasatu', 'investor', 'jakartaglobe'];
+        if (!in_array($portal, $allowed_portals)) {
+            show_404();
+        }
+
+        $data['action'] = 'create';
+        $data['newsletter'] = ['portal' => $portal];
+        $data['admin'] = $this->admin;
+        $this->load->view('admin/newsletter_create', $data);
+    }
+
+    public function edit($id)
+    {
+        $data['action'] = 'edit';
+        $data['newsletter'] = $this->Newsletter_model->get_by_id($id);
+        
+        if (!$data['newsletter']) {
+            show_404();
+        }
+
+        $portal = $data['newsletter']['portal'];
+        $data['articles'] = $this->Newsletter_article_model->get_by_newsletter($id);
+        $stats = $this->Market_stat_model->get_by_newsletter($id);
+        
+        $data['stats_map'] = [];
+        foreach ($stats as $s) {
+            $data['stats_map'][$s['label']] = $s;
+        }
+
+        $data['admin'] = $this->admin;
+        $this->load->view('admin/' . $portal . '_form', $data);
+    }
+
+    public function save()
+    {
+        $id = $this->input->post('id');
+        $portal = $this->input->post('portal');
+        $volume = $this->input->post('volume');
+        $subject = $this->input->post('subject');
+        $greeting_title = $this->input->post('greeting_title');
+        $greeting_body = $this->input->post('greeting_body');
+
+        $db_data = [
+            'portal' => $portal,
+            'volume' => $volume,
+            'subject' => $subject,
+            'greeting_title' => $greeting_title,
+            'greeting_body' => $greeting_body,
+        ];
+
+        if ($id) {
+            $this->Newsletter_model->update($id, $db_data);
+
+            // Update articles dynamically
+            $articles_post = $this->input->post('articles');
+            if (!empty($articles_post)) {
+                foreach ($articles_post as $art) {
+                    if (isset($art['id'])) {
+                        $this->Newsletter_article_model->update($art['id'], [
+                            'title' => $art['title'],
+                            'excerpt' => isset($art['excerpt']) ? $art['excerpt'] : '',
+                            'category' => isset($art['category']) ? $art['category'] : '',
+                            'image_url' => isset($art['image_url']) ? $art['image_url'] : ''
+                        ]);
+                    }
+                }
+            }
+            
+            if ($portal === 'investor') {
+                $this->Market_stat_model->delete_by_newsletter($id);
+                $stats = $this->input->post('stats');
+                if (!empty($stats)) {
+                    $stats_to_insert = [];
+                    $order = 1;
+                    foreach ($stats as $label => $val) {
+                        if (!empty($val['value'])) {
+                            $stats_to_insert[] = [
+                                'newsletter_id' => $id,
+                                'label' => $label,
+                                'value' => $val['value'],
+                                'direction' => $val['direction'],
+                                'sort_order' => $order++
+                            ];
+                        }
+                    }
+                    if (!empty($stats_to_insert)) {
+                        $this->Market_stat_model->insert_batch($stats_to_insert);
+                    }
+                }
+            }
+
+            $this->session->set_flashdata('success', 'Newsletter berhasil diperbarui.');
+            redirect('logs/' . $portal);
+        } else {
+            $new_id = $this->Newsletter_model->insert($db_data);
+
+            // Update newly created placeholder articles
+            $articles_post = $this->input->post('articles');
+            if (!empty($articles_post)) {
+                $inserted_articles = $this->Newsletter_article_model->get_by_newsletter($new_id);
+                foreach ($articles_post as $idx => $art) {
+                    if (isset($inserted_articles[$idx])) {
+                        $this->Newsletter_article_model->update($inserted_articles[$idx]['id'], [
+                            'title' => $art['title'],
+                            'excerpt' => isset($art['excerpt']) ? $art['excerpt'] : '',
+                            'category' => isset($art['category']) ? $art['category'] : '',
+                            'image_url' => isset($art['image_url']) ? $art['image_url'] : ''
+                        ]);
+                    }
+                }
+            }
+
+            // If Investor, update IHSG/USD tickers
+            if ($portal === 'investor') {
+                $this->Market_stat_model->delete_by_newsletter($new_id);
+                $stats = $this->input->post('stats');
+                if (!empty($stats)) {
+                    $stats_to_insert = [];
+                    $order = 1;
+                    foreach ($stats as $label => $val) {
+                        if (!empty($val['value'])) {
+                            $stats_to_insert[] = [
+                                'newsletter_id' => $new_id,
+                                'label' => $label,
+                                'value' => $val['value'],
+                                'direction' => $val['direction'],
+                                'sort_order' => $order++
+                            ];
+                        }
+                    }
+                    if (!empty($stats_to_insert)) {
+                        $this->Market_stat_model->insert_batch($stats_to_insert);
+                    }
+                }
+            }
+
+            $this->session->set_flashdata('success', 'Newsletter berhasil dibuat.');
+            redirect('logs/' . $portal);
+        }
+    }
+
+    public function add_article()
+    {
+        $newsletter_id = $this->input->post('newsletter_id');
+        $article_type = $this->input->post('article_type');
+        $title = $this->input->post('title');
+        $excerpt = $this->input->post('excerpt');
+        $image_url = $this->input->post('image_url');
+        $category = $this->input->post('category');
+        $sort_order = $this->input->post('sort_order');
+
+        $art_data = [
+            'newsletter_id' => $newsletter_id,
+            'article_type' => $article_type,
+            'title' => $title,
+            'excerpt' => $excerpt,
+            'image_url' => $image_url,
+            'category' => $category,
+            'sort_order' => $sort_order ? $sort_order : 0
+        ];
+
+        $this->Newsletter_article_model->insert($art_data);
+        $this->session->set_flashdata('success', 'Artikel berhasil ditambahkan.');
+        redirect('newsletters/edit/' . $newsletter_id);
+    }
+
+    public function delete_article($id, $newsletter_id)
+    {
+        $this->Newsletter_article_model->delete($id);
+        $this->session->set_flashdata('success', 'Artikel berhasil dihapus.');
+        redirect('newsletters/edit/' . $newsletter_id);
+    }
+
+    public function delete($id)
+    {
+        $this->Newsletter_model->delete($id);
+        $this->session->set_flashdata('success', 'Newsletter berhasil dihapus.');
+        redirect('newsletters');
+    }
+
+    public function reset_status($id)
+    {
+        $this->Newsletter_model->update($id, [
+            'status' => 'draft',
+            'sent_at' => NULL
+        ]);
+        $this->session->set_flashdata('success', 'Status newsletter berhasil direset kembali ke draft.');
+        redirect('newsletters');
+    }
+
+    public function preview($id)
+    {
+        $data['newsletter'] = $this->Newsletter_model->get_by_id($id);
+        if (!$data['newsletter']) {
+            show_404();
+        }
+        $this->load->view('admin/newsletter_preview', $data);
+    }
+
+    public function render_html($id)
+    {
+        $newsletter = $this->Newsletter_model->get_by_id($id);
+        if (!$newsletter) {
+            show_404();
+        }
+
+        $articles = $this->Newsletter_article_model->get_by_newsletter($id);
+        $stats = $this->Market_stat_model->get_by_newsletter($id);
+
+        $main_article = null;
+        $grid_articles = [];
+        $list_articles = [];
+        $sidebar_articles = [];
+        $alternating_articles = [];
+
+        foreach ($articles as $art) {
+            switch ($art['article_type']) {
+                case 'main':
+                    $main_article = $art;
+                    break;
+                case 'grid':
+                    $grid_articles[] = $art;
+                    break;
+                case 'list':
+                    $list_articles[] = $art;
+                    break;
+                case 'sidebar':
+                    $sidebar_articles[] = $art;
+                    break;
+                case 'alternating':
+                    $alternating_articles[] = $art;
+                    break;
+            }
+        }
+
+        $portal = $newsletter['portal'];
+        $subject = $newsletter['subject'];
+        $volume = $newsletter['volume'];
+        $greeting_title = $newsletter['greeting_title'];
+        $greeting_body = $newsletter['greeting_body'];
+        
+        $days = ['Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'];
+        $months = [
+            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April', 'May' => 'Mei', 'June' => 'Juni',
+            'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+        ];
+
+        $timestamp = !empty($newsletter['sent_at']) ? strtotime($newsletter['sent_at']) : strtotime($newsletter['created_at']);
+        $dayName = $days[date('l', $timestamp)];
+        $monthName = $months[date('F', $timestamp)];
+        $dateStr = "$dayName, " . date('d', $timestamp) . " $monthName " . date('Y', $timestamp);
+        
+        if ($portal === 'jakartaglobe') {
+            $dateStr = date('l, d M Y', $timestamp);
+        }
+
+        $default_name = $this->config->item('default_recipient_name') ?: 'Sahabat B-Universe';
+        $viewData = [
+            'subject' => $subject,
+            'date' => $dateStr,
+            'volume' => $volume,
+            'greeting_title' => str_replace('[Nama Subscriber]', $default_name, $greeting_title),
+            'greeting_body' => str_replace('[Nama Subscriber]', $default_name, $greeting_body),
+            'main_article' => $main_article,
+            'grid_articles' => $grid_articles,
+            'list_articles' => $list_articles,
+            'sidebar_articles' => $sidebar_articles,
+            'alternating_articles' => $alternating_articles,
+            'market_stats' => $stats,
+            'subscriber_email' => 'helpdeskonit007@gmail.com',
+            'subscriber_name' => $default_name
+        ];
+
+        $this->load->view('emails/' . $portal . '_template', $viewData);
+    }
+}
