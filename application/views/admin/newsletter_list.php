@@ -56,7 +56,7 @@
                                     </span>
                                 <?php else: ?>
                                     <span class="px-2 py-0.5 bg-[#FBEFDD] text-[#B8791A] rounded text-[10px] font-bold uppercase tracking-wider">
-                                        Jakarta Globe
+                                        JakartaGlobe
                                     </span>
                                 <?php endif; ?>
                             </td>
@@ -108,6 +108,12 @@
             </tbody>
         </table>
     </div>
+    <?php if (!empty($pagination_links)): ?>
+        <div class="mt-4 flex items-center justify-between font-sans">
+            <span class="text-xs text-ink-500 font-medium"><?= $showing_counter ?></span>
+            <?= $pagination_links ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php $this->load->view('admin/footer'); ?>

@@ -9,7 +9,7 @@ class Subscriber_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_all($search = '', $sort_order = 'normal')
+    public function get_all($search = '', $sort_order = 'normal', $limit = NULL, $offset = NULL)
     {
         if (!empty($search)) {
             $this->db->group_start();
@@ -22,6 +22,12 @@ class Subscriber_model extends CI_Model {
             $this->db->order_by('created_at', 'ASC');
         } elseif ($sort_order === 'desc') {
             $this->db->order_by('created_at', 'DESC');
+        }
+
+        if ($limit !== NULL && $offset !== NULL) {
+            $this->db->limit($limit, $offset);
+        } elseif ($limit !== NULL) {
+            $this->db->limit($limit);
         }
 
         $query = $this->db->get('subscribers');
@@ -84,9 +90,15 @@ class Subscriber_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function count_all()
+    public function count_all($search = '')
     {
-        return $this->db->count_all('subscribers');
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('name', $search);
+            $this->db->or_like('email', $search);
+            $this->db->group_end();
+        }
+        return $this->db->count_all_results('subscribers');
     }
 
     public function get_by_ids($ids)

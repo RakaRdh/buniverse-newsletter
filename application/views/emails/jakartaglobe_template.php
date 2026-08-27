@@ -42,17 +42,17 @@
           
           <!-- 1. Header & Hero Banner with Overlay Text -->
           <tr>
-            <td background="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.png" height="297" valign="top" style="background-image: url('https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #4a4a4a; height: 297px;">
+            <td background="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.jpg" height="297" valign="top" style="background-image: url('https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #4a4a4a; height: 297px;">
               <!--[if gte mso 9]>
               <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:297px;">
-                <v:fill type="tile" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.png" color="#4a4a4a" />
+                <v:fill type="tile" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-header.jpg" color="#4a4a4a" />
                 <v:textbox inset="0,0,0,0">
               <![endif]-->
               <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <!-- Logo Row -->
                 <tr>
                   <td align="right" style="padding: 26px 20px 0 20px;">
-                    <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-logo.png" width="165" alt="JAKARTA GLOBE" style="display: inline-block; border: 0; max-width: 100%; height: auto;" />
+                    <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-logo.png" width="165" alt="JAKARTA GLOBE" loading="lazy" style="display: inline-block; border: 0; max-width: 100%; height: auto;" />
                   </td>
                 </tr>
 
@@ -101,7 +101,7 @@
                       <?php if (!empty($main_article['image_url'])): ?>
                       <tr>
                         <td style="padding-bottom: 12px;">
-                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
+                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                         </td>
                       </tr>
                       <?php endif; ?>
@@ -185,9 +185,9 @@
                         <?php elseif ($index % 2 === 0): ?>
                           <!-- Left Image, Right Text -->
                           <td width="45%" style="width: 45%; padding-right: 20px;" valign="middle">
-                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
+                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                           </td>
-                          <td width="52%" style="width: 52%;" valign="middle" style="font-family: 'Inter', sans-serif;">
+                          <td width="52%" valign="middle" style="width: 52%; font-family: 'Inter', sans-serif;">
                             <h3 style="margin: 0 0 8px 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
                               <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                             </h3>
@@ -197,7 +197,7 @@
                           </td>
                         <?php else: ?>
                           <!-- Right Image, Left Text -->
-                          <td width="52%" style="width: 52%; padding-right: 20px;" valign="middle" style="font-family: 'Inter', sans-serif;">
+                          <td width="52%" valign="middle" style="width: 52%; padding-right: 20px; font-family: 'Inter', sans-serif;">
                             <h3 style="margin: 0 0 8px 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
                               <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                             </h3>
@@ -206,7 +206,7 @@
                             </p>
                           </td>
                           <td width="45%" style="width: 45%;" valign="middle">
-                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
+                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                           </td>
                         <?php endif; ?>
                       </tr>

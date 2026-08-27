@@ -68,7 +68,7 @@
                                         <?php elseif ($log['portal'] === 'investor'): ?>
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#E7EFF7] text-[#3A6FA8]">Investor.id</span>
                                         <?php else: ?>
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#FBEFDD] text-[#B8791A]">Jakarta Globe</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#FBEFDD] text-[#B8791A]">JakartaGlobe</span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="p-3 font-semibold text-ink-900 truncate max-w-[120px]" title="<?= htmlspecialchars($log['subject']) ?>">

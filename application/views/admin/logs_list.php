@@ -31,7 +31,7 @@ function get_sort_icon($col, $current_col, $current_order) {
         <?php elseif ($portal === 'investor'): ?>
             <span class="px-2.5 py-0.5 bg-[#E7EFF7] text-[#3A6FA8] border border-transparent rounded-[6px] text-xs font-bold uppercase tracking-wider">Investor.id</span>
         <?php elseif ($portal === 'jakartaglobe'): ?>
-            <span class="px-2.5 py-0.5 bg-[#FBEFDD] text-[#B8791A] border border-transparent rounded-[6px] text-xs font-bold uppercase tracking-wider">Jakarta Globe</span>
+            <span class="px-2.5 py-0.5 bg-[#FBEFDD] text-[#B8791A] border border-transparent rounded-[6px] text-xs font-bold uppercase tracking-wider">JakartaGlobe</span>
         <?php else: ?>
             <span class="px-2.5 py-0.5 bg-ink-50 text-ink-700 border border-ink-300 rounded-[6px] text-xs font-bold uppercase tracking-wider">All Portals</span>
         <?php endif; ?>
@@ -97,7 +97,7 @@ function get_sort_icon($col, $current_col, $current_order) {
                                     <?php elseif ($log['portal'] === 'investor'): ?>
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#E7EFF7] text-[#3A6FA8]">Investor.id</span>
                                     <?php else: ?>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#FBEFDD] text-[#B8791A]">Jakarta Globe</span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#FBEFDD] text-[#B8791A]">JakartaGlobe</span>
                                     <?php endif; ?>
                                 </td>
                             <?php endif; ?>
@@ -119,6 +119,12 @@ function get_sort_icon($col, $current_col, $current_order) {
             </tbody>
         </table>
     </div>
+    <?php if (!empty($pagination_links)): ?>
+        <div class="mt-4 flex items-center justify-between font-sans">
+            <span class="text-xs text-ink-500 font-medium"><?= $showing_counter ?></span>
+            <?= $pagination_links ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php $this->load->view('admin/footer'); ?>

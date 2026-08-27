@@ -16,7 +16,48 @@ class Subscribers extends Admin_Controller {
         if (!in_array($sort_order, ['asc', 'desc', 'normal'])) {
             $sort_order = 'normal';
         }
-        $data['subscribers'] = $this->Subscriber_model->get_all($search, $sort_order);
+
+        $this->load->library('pagination');
+
+        $config['base_url'] = base_url('subscribers');
+        $config['total_rows'] = $this->Subscriber_model->count_all($search);
+        $config['per_page'] = 10;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page';
+        $config['use_page_numbers'] = TRUE;
+        $config['reuse_query_string'] = TRUE;
+
+        // Tailwind styling for pagination
+        $config['full_tag_open'] = '<div class="flex items-center gap-1 mt-4 justify-end font-sans">';
+        $config['full_tag_close'] = '</div>';
+        $config['first_link'] = 'First';
+        $config['last_link'] = 'Last';
+        $config['first_tag_open'] = '<span class="px-2.5 py-1.5 border border-ink-150 rounded-md text-xs text-ink-700 bg-white hover:bg-ink-50">';
+        $config['first_tag_close'] = '</span>';
+        $config['last_tag_open'] = '<span class="px-2.5 py-1.5 border border-ink-150 rounded-md text-xs text-ink-700 bg-white hover:bg-ink-50">';
+        $config['last_tag_close'] = '</span>';
+        $config['next_link'] = '&raquo;';
+        $config['next_tag_open'] = '<span class="px-2.5 py-1.5 border border-ink-150 rounded-md text-xs text-ink-700 bg-white hover:bg-ink-50">';
+        $config['next_tag_close'] = '</span>';
+        $config['prev_link'] = '&laquo;';
+        $config['prev_tag_open'] = '<span class="px-2.5 py-1.5 border border-ink-150 rounded-md text-xs text-ink-700 bg-white hover:bg-ink-50">';
+        $config['prev_tag_close'] = '</span>';
+        $config['cur_tag_open'] = '<span class="px-3 py-1.5 bg-accent-500 text-white rounded-md text-xs font-bold shadow-sm">';
+        $config['cur_tag_close'] = '</span>';
+        $config['num_tag_open'] = '<span class="px-3 py-1.5 border border-ink-150 rounded-md text-xs text-ink-700 bg-white hover:bg-ink-50">';
+        $config['num_tag_close'] = '</span>';
+
+        $this->pagination->initialize($config);
+
+        $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
+        if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $config['per_page'];
+
+        $data['subscribers'] = $this->Subscriber_model->get_all($search, $sort_order, $config['per_page'], $offset);
+        $data['pagination_links'] = $this->pagination->create_links();
+        $start_num = $config['total_rows'] > 0 ? ($offset + 1) : 0;
+        $end_num = min($offset + $config['per_page'], $config['total_rows']);
+        $data['showing_counter'] = "Menampilkan $start_num - $end_num dari {$config['total_rows']}";
         $data['search'] = $search;
         $data['sort_order'] = $sort_order;
         $data['admin'] = $this->admin;

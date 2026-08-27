@@ -38,10 +38,10 @@
           
           <!-- 1. Header & Overlap Container (336px height) -->
           <tr>
-            <td background="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.png" height="336" valign="top" style="background-image: url('https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.png'); background-repeat: no-repeat; background-position: top; background-color: #ffffff; height: 336px; padding: 0;">
+            <td background="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.jpg" height="336" valign="top" style="background-image: url('https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.jpg'); background-repeat: no-repeat; background-position: top; background-color: #ffffff; height: 336px; padding: 0;">
               <!--[if gte mso 9]>
               <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:288px;">
-                <v:fill type="tile" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.png" color="#1a1a1a" />
+                <v:fill type="tile" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-header.jpg" color="#1a1a1a" />
                 <v:textbox inset="0,0,0,0">
               <![endif]-->
               <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -53,7 +53,7 @@
                       <tr>
                         <!-- Logo (122x22) -->
                         <td valign="middle" width="122" style="width: 122px;">
-                          <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-logo.png" width="122" height="22" alt="BERITA SATU" style="display: block; border: 0; width: 122px; height: 22px;" />
+                          <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-logo.png" width="122" height="22" alt="BERITA SATU" loading="lazy" style="display: block; border: 0; width: 122px; height: 22px;" />
                         </td>
                         <!-- Date Info (Arial, Regular 12px, line-height 100%) -->
                         <td valign="middle" align="right" style="color: #ffffff; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; line-height: 100%;">
@@ -77,7 +77,7 @@
                           </div>
                           <!-- 1 Fokus Topik -->
                           <div style="width: 100%; height: 20px; font-size: 11px; font-weight: bold; color: #cccccc; line-height: 20px;">
-                            1 Fokus Topik
+                            <?= !empty($main_article['category']) ? htmlspecialchars($main_article['category']) : '1 Fokus Topik' ?>
                           </div>
                         </td>
                       </tr>
@@ -126,7 +126,7 @@
                 <?php if (!empty($main_article['image_url'])): ?>
                 <tr>
                   <td style="padding-bottom: 15px;">
-                    <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="hero-image" src="<?= $main_article['image_url'] ?>" width="560" height="315" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" /></a>
+                     <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="hero-image" src="<?= $main_article['image_url'] ?>" width="561" height="374" alt="<?= htmlspecialchars($main_article['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                   </td>
                 </tr>
                 <?php endif; ?>
@@ -147,7 +147,7 @@
                 <!-- Tag Kategori -->
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <span style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 400; line-height: 20px; color: #797878;"><?= htmlspecialchars($main_article['category']) ?></span>
+                    <span style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 400; line-height: 20px; color: #797878;">Nasional</span>
                   </td>
                 </tr>
               </table>
@@ -185,7 +185,7 @@
                        <?php if (!empty($art['image_url'])): ?>
                       <tr>
                         <td style="padding-bottom: 12px;">
-                          <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="grid-image" src="<?= $art['image_url'] ?>" width="270" height="152" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 4px; border: 0;" /></a>
+                          <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="grid-image" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                         </td>
                       </tr>
                       <?php endif; ?>

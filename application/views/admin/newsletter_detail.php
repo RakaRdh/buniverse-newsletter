@@ -259,43 +259,54 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
-            overflow: auto;
+            align-items: flex-start;
+            overflow-y: auto;
+            overflow-x: auto;
             background-color: #EDE9E4;
             transition: all 0.3s ease;
+            padding: 24px;
         }
 
-        .iframe-wrapper {
+        .iframe-outer-wrapper {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: #ffffff;
             box-shadow: 0 12px 32px rgba(35, 31, 29, 0.08);
             border-radius: 8px;
             border: 1px solid #D8D2CC;
-            height: 100%;
+            height: auto;
             width: 100%;
-            display: flex;
-            flex-direction: column;
+            max-width: 800px;
+            overflow: visible;
         }
 
-        .iframe-wrapper.desktop {
+        .iframe-outer-wrapper.desktop {
             width: 100%;
             max-width: 100%;
-            height: 100%;
+            height: auto;
             border-radius: 0;
             border: none;
             box-shadow: none;
+            overflow: visible;
         }
 
-        .iframe-wrapper.tablet {
+        .iframe-outer-wrapper.tablet {
             width: 768px;
             max-width: 100%;
-            height: 100%;
+            height: auto;
+            overflow: visible;
         }
 
-        .iframe-wrapper.mobile {
+        .iframe-outer-wrapper.mobile {
             width: 375px;
             max-width: 100%;
-            height: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .iframe-scale-wrapper {
+            width: 100%;
+            height: auto;
+            position: relative;
         }
 
         iframe {
@@ -303,8 +314,9 @@
             height: 100%;
             border: none;
             border-radius: 8px;
+            display: block;
         }
-        .iframe-wrapper.desktop iframe {
+        .iframe-outer-wrapper.desktop iframe {
             border-radius: 0;
         }
     </style>
@@ -317,7 +329,7 @@
                 <?php 
                 if ($newsletter['portal'] === 'beritasatu') echo 'BeritaSatu';
                 elseif ($newsletter['portal'] === 'investor') echo 'Investor.id';
-                else echo 'Jakarta Globe';
+                else echo 'JakartaGlobe';
                 ?>
             </span>
             <h1 class="newsletter-subject"><?= htmlspecialchars($newsletter['subject']) ?></h1>
@@ -426,16 +438,20 @@
                 </div>
             </div>
 
-            <div id="iframe-wrapper" class="iframe-wrapper desktop opacity-0 transition-opacity duration-300">
-                <iframe id="preview-iframe" src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>" onload="onIframeLoad()"></iframe>
+            <div id="iframe-outer-wrapper" class="iframe-outer-wrapper desktop opacity-0 transition-opacity duration-300">
+                <div id="iframe-scale-wrapper" class="iframe-scale-wrapper">
+                    <iframe id="preview-iframe" src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>" onload="onIframeLoad()"></iframe>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        let currentDevice = 'desktop';
+
         function onIframeLoad() {
             const spinner = document.getElementById('preview-loading');
-            const wrapper = document.getElementById('iframe-wrapper');
+            const wrapper = document.getElementById('iframe-outer-wrapper');
             if (spinner) {
                 spinner.classList.add('opacity-0');
                 setTimeout(() => spinner.remove(), 300);
@@ -443,10 +459,16 @@
             if (wrapper) {
                 wrapper.classList.remove('opacity-0');
             }
+            // Recalculate heights on load
+            setViewport(currentDevice);
         }
 
         function setViewport(device) {
-            const wrapper = document.getElementById('iframe-wrapper');
+            currentDevice = device;
+            
+            const outer = document.getElementById('iframe-outer-wrapper');
+            const scaleWrapper = document.getElementById('iframe-scale-wrapper');
+            const iframe = document.getElementById('preview-iframe');
             const container = document.getElementById('preview-viewport-container');
             const tabs = document.querySelectorAll('.viewport-tab');
             
@@ -457,18 +479,66 @@
             
             // Add active classes to clicked tab
             const activeTab = document.getElementById('tab-' + device);
-            activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md bg-accent-500 text-white shadow-sm transition-all';
+            if (activeTab) {
+                activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md bg-accent-500 text-white shadow-sm transition-all';
+            }
+            
+            // Reset iframe styles
+            iframe.style.transform = '';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.transformOrigin = '';
+            iframe.setAttribute('scrolling', 'no');
+            
+            scaleWrapper.style.width = '100%';
+            scaleWrapper.style.height = 'auto';
             
             // Update wrapper class
-            wrapper.className = 'iframe-wrapper ' + device;
+            outer.className = 'iframe-outer-wrapper ' + device;
+            
+            // Get unscaled height of the email document
+            let docHeight = 2000;
+            try {
+                if (iframe.contentWindow && iframe.contentWindow.document) {
+                    docHeight = iframe.contentWindow.document.documentElement.scrollHeight || iframe.contentWindow.document.body.scrollHeight;
+                }
+            } catch (e) {}
             
             // Update container padding & style dynamically
             if (device === 'desktop') {
                 container.style.padding = '0';
                 container.style.backgroundColor = '#ffffff';
-            } else {
+                
+                iframe.style.width = '100%';
+                iframe.style.height = docHeight + 'px';
+                scaleWrapper.style.width = '100%';
+                scaleWrapper.style.height = docHeight + 'px';
+            } else if (device === 'tablet') {
                 container.style.padding = '24px';
                 container.style.backgroundColor = '#EDE9E4';
+                
+                const targetWidth = 768;
+                iframe.style.width = targetWidth + 'px';
+                iframe.style.height = docHeight + 'px';
+                scaleWrapper.style.width = targetWidth + 'px';
+                scaleWrapper.style.height = docHeight + 'px';
+            } else if (device === 'mobile') {
+                container.style.padding = '24px';
+                container.style.backgroundColor = '#EDE9E4';
+                
+                const targetWidth = 375;
+                const emailWidth = 600;
+                const scale = targetWidth / emailWidth; // 0.625
+                
+                // Set the iframe size to unscaled dimensions
+                iframe.style.width = emailWidth + 'px';
+                iframe.style.height = docHeight + 'px';
+                iframe.style.transform = 'scale(' + scale + ')';
+                iframe.style.transformOrigin = 'top left';
+                
+                // Set the scaleWrapper to the exact visually scaled dimensions to prevent extra whitespace
+                scaleWrapper.style.width = targetWidth + 'px';
+                scaleWrapper.style.height = (docHeight * scale) + 'px';
             }
         }
 

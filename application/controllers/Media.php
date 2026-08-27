@@ -7,6 +7,7 @@ class Media extends Admin_Controller {
     {
         parent::__construct();
         $this->load->library('supabase_uploader');
+        $this->load->library('image_optimizer');
     }
 
     public function upload_image()
@@ -23,13 +24,26 @@ class Media extends Admin_Controller {
             return;
         }
 
-        $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $fileName  = 'article-' . time() . '-' . uniqid() . '.' . $extension;
+        // Target temp file path for compressed JPEG
+        $tempJpgPath = APPPATH . 'cache/compressed-' . time() . '-' . uniqid() . '.jpg';
+        
+        // Compress and convert the uploaded temp file to JPEG
+        $compressed = $this->image_optimizer->compress_to_jpg($_FILES['image']['tmp_name'], $tempJpgPath, 75);
+        if (!$compressed) {
+            echo json_encode(['success' => false, 'message' => 'Gagal mengompresi gambar']);
+            return;
+        }
+
+        // Upload to a separate 'uploads/' directory in Supabase storage
+        $fileName = 'uploads/article-' . time() . '-' . uniqid() . '.jpg';
 
         try {
-            $publicUrl = $this->supabase_uploader->upload($_FILES['image']['tmp_name'], $fileName, $mime);
+            $publicUrl = $this->supabase_uploader->upload($tempJpgPath, $fileName, 'image/jpeg');
+            // Clean up compressed temp file
+            @unlink($tempJpgPath);
             echo json_encode(['success' => true, 'url' => $publicUrl]);
         } catch (Exception $e) {
+            @unlink($tempJpgPath);
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }

@@ -9,12 +9,17 @@ class Newsletter_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_all($portal = NULL)
+    public function get_all($portal = NULL, $limit = NULL, $offset = NULL)
     {
         if ($portal !== NULL) {
             $this->db->where('portal', $portal);
         }
         $this->db->order_by('created_at', 'DESC');
+        if ($limit !== NULL && $offset !== NULL) {
+            $this->db->limit($limit, $offset);
+        } elseif ($limit !== NULL) {
+            $this->db->limit($limit);
+        }
         $query = $this->db->get('newsletters');
         return $query->result_array();
     }
@@ -60,11 +65,11 @@ class Newsletter_model extends CI_Model {
 
         } elseif ($portal === 'jakartaglobe') {
             $articles[] = ['newsletter_id' => $newsletter_id, 'article_type' => 'main', 'sort_order' => 1, 'title' => 'Main Topic Title', 'excerpt' => '', 'category' => 'World', 'image_url' => ''];
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 $articles[] = ['newsletter_id' => $newsletter_id, 'article_type' => 'sidebar', 'sort_order' => $i + 1, 'title' => "Sidebar Topic $i Title", 'excerpt' => '', 'category' => 'World', 'image_url' => ''];
             }
             for ($i = 1; $i <= 4; $i++) {
-                $articles[] = ['newsletter_id' => $newsletter_id, 'article_type' => 'alternating', 'sort_order' => $i + 4, 'title' => "Alternating Topic $i Title", 'excerpt' => '', 'category' => 'World', 'image_url' => ''];
+                $articles[] = ['newsletter_id' => $newsletter_id, 'article_type' => 'alternating', 'sort_order' => $i + 6, 'title' => "Alternating Topic $i Title", 'excerpt' => '', 'category' => 'World', 'image_url' => ''];
             }
         }
 
@@ -87,8 +92,11 @@ class Newsletter_model extends CI_Model {
         return $this->db->delete('newsletters');
     }
 
-    public function count_all()
+    public function count_all($portal = NULL)
     {
-        return $this->db->count_all('newsletters');
+        if ($portal !== NULL) {
+            $this->db->where('portal', $portal);
+        }
+        return $this->db->count_all_results('newsletters');
     }
 }

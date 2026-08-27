@@ -42,6 +42,8 @@ class Supabase_uploader {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST  => 'POST',
             CURLOPT_POSTFIELDS     => $fileContent,
+            CURLOPT_SSL_VERIFYPEER => false, // Bypass SSL validation on local Windows machine
+            CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_HTTPHEADER     => [
                 'Authorization: Bearer ' . $this->serviceKey,
                 'apikey: ' . $this->serviceKey,
@@ -54,8 +56,8 @@ class Supabase_uploader {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpCode !== 200) {
-            throw new Exception('Upload ke Supabase gagal: ' . $response);
+        if ($httpCode < 200 || $httpCode >= 300) {
+            throw new Exception('Upload ke Supabase gagal (HTTP ' . $httpCode . '): ' . $response);
         }
 
         // Format public URL Supabase Storage

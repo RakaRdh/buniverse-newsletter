@@ -37,10 +37,10 @@
                 <tr>
                   <!-- Logo (width: 160) -->
                   <td width="40%" style="width: 40%;" valign="middle">
-                    <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-logo.png" width="160" alt="INVESTOR.ID" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                    <img src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-logo.png" width="160" alt="INVESTOR.ID" loading="lazy" style="display: block; border: 0; max-width: 100%; height: auto;" />
                   </td>
                   <!-- Date Info -->
-                  <td width="60%" style="width: 60%;" valign="middle" align="right" style="color: #333333; font-family: Arial, sans-serif; font-size: 12px; line-height: 100%;">
+                  <td width="60%" valign="middle" align="right" style="width: 60%; color: #333333; font-family: Arial, sans-serif; font-size: 12px; line-height: 140%;">
                     <strong style="font-family: Arial, sans-serif; font-weight: 700; font-size: 12px;">Investor briefing Vol <?= isset($volume) ? $volume : '1' ?></strong><span style="font-family: Arial, sans-serif; font-weight: 400; font-size: 12px;"> - <?= isset($date) ? $date : date('l, d F Y') ?></span>
                   </td>
                 </tr>
@@ -51,7 +51,7 @@
           <!-- 2. Header Banner Image -->
           <tr>
             <td style="padding: 0 20px 30px 20px;">
-              <img class="responsive-img" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-header.png" width="560" height="233" alt="Investor Briefing Banner" style="display: block; width: 100%; max-width: 100%; height: auto; border: 0; border-radius: 8px;" />
+              <img class="responsive-img" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-header.jpg" width="560" height="233" alt="Investor Briefing Banner" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border: 0; border-radius: 8px;" />
             </td>
           </tr>
  
@@ -63,7 +63,7 @@
                 <tr>
                   <td style="padding: 15px 10px; padding-top: 15px; padding-bottom: 15px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
+                       <tr>
                         <?php 
                         $widthPercent = floor(100 / count($market_stats)) . '%';
                         foreach ($market_stats as $stat): 
@@ -121,11 +121,11 @@
                         <!-- Image Left -->
                         <?php if (!empty($main_article['image_url'])): ?>
                         <td width="45%" style="width: 45%;" valign="top">
-                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" /></a>
+                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" loading="lazy" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                         </td>
                         <?php endif; ?>
                         <!-- Content Right -->
-                        <td width="<?= !empty($main_article['image_url']) ? '52%' : '100%' ?>" style="width: <?= !empty($main_article['image_url']) ? '52%' : '100%' ?>; padding-left: <?= !empty($main_article['image_url']) ? '3%' : '0' ?>;" valign="top" style="font-family: Arial, sans-serif;">
+                        <td width="<?= !empty($main_article['image_url']) ? '52%' : '100%' ?>" valign="top" style="width: <?= !empty($main_article['image_url']) ? '52%' : '100%' ?>; padding-left: <?= !empty($main_article['image_url']) ? '3%' : '0' ?>; font-family: Arial, sans-serif;">
                           <h3 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 20px; color: #111111;">
                             <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($main_article['title']) ?></a>
                           </h3>

@@ -42,7 +42,7 @@ class Send_log_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function get_filtered_logs($portal = 'all', $start_date = null, $end_date = null, $sort_col = 'sent_at', $sort_order = 'desc')
+    public function get_filtered_logs($portal = 'all', $start_date = null, $end_date = null, $sort_col = 'sent_at', $sort_order = 'desc', $limit = NULL, $offset = NULL)
     {
         if ($portal !== 'all') {
             $this->db->where('portal', $portal);
@@ -67,8 +67,28 @@ class Send_log_model extends CI_Model {
         $sort_order = strtolower($sort_order) === 'asc' ? 'ASC' : 'DESC';
 
         $this->db->order_by($sort_col_db, $sort_order);
+
+        if ($limit !== NULL && $offset !== NULL) {
+            $this->db->limit($limit, $offset);
+        } elseif ($limit !== NULL) {
+            $this->db->limit($limit);
+        }
         
         $query = $this->db->get('newsletter_send_logs');
         return $query->result_array();
+    }
+
+    public function count_filtered_logs($portal = 'all', $start_date = null, $end_date = null)
+    {
+        if ($portal !== 'all') {
+            $this->db->where('portal', $portal);
+        }
+        if (!empty($start_date)) {
+            $this->db->where('sent_at >=', $start_date . ' 00:00:00');
+        }
+        if (!empty($end_date)) {
+            $this->db->where('sent_at <=', $end_date . ' 23:59:59');
+        }
+        return $this->db->count_all_results('newsletter_send_logs');
     }
 }

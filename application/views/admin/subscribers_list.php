@@ -125,6 +125,12 @@ function get_sub_sort_icon($current_order) {
                 </tbody>
             </table>
         </div>
+        <?php if (!empty($pagination_links)): ?>
+            <div class="mt-4 flex items-center justify-between font-sans">
+                <span class="text-xs text-ink-500 font-medium"><?= $showing_counter ?></span>
+                <?= $pagination_links ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Right panel: CSV Import (1/3 width) -->
