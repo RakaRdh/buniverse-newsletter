@@ -10,7 +10,7 @@ class Admin extends MY_Controller {
             $this->load->library('jwt');
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             $decoded = $this->jwt->decode($token, $key);
-            if ($decoded && $decoded->username === 'admin_user') {
+            if ($decoded && $decoded->username === 'admin') {
                 redirect('newsletters');
             }
         }
@@ -23,12 +23,12 @@ class Admin extends MY_Controller {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
-        if ($username === 'admin_user' && $password === 'rakaherdika15') {
+        if ($username === 'admin' && $password === '123') {
             $this->load->library('jwt');
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             
             $payload = [
-                'username' => 'admin_user',
+                'username' => 'admin',
                 'exp' => time() + 7200 // 2 hours expiration
             ];
             

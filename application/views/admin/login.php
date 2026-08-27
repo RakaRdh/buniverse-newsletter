@@ -113,6 +113,11 @@
       <button type="submit" class="w-full py-3 px-4 bg-[#20254D] hover:bg-[#161a38] text-white font-semibold rounded-xl shadow-xl shadow-[#20254D]/20 active:scale-[0.99] transition-all duration-150">
         Sign In
       </button>
+
+      <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500">
+        <p class="font-medium text-slate-600">Default Credentials:</p>
+        <p class="mt-1">Username: <span class="font-semibold text-slate-800">admin</span> | Password: <span class="font-semibold text-slate-800">123</span></p>
+      </div>
     </form>
   </main>
 
