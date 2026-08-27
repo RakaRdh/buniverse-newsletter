@@ -26,13 +26,31 @@ class Send extends Admin_Controller {
             redirect('newsletters');
         }
 
+        // If GET request, show confirmation page with subscriber checklist
+        if ($this->input->method() === 'get') {
+            $data['title'] = 'Confirm & Send Newsletter';
+            $data['newsletter'] = $newsletter;
+            $data['subscribers'] = $this->Subscriber_model->get_all(); // Get all subscribers
+            $data['admin'] = $this->admin;
+            
+            $this->load->view('admin/send_confirm', $data);
+            return;
+        }
+
+        // POST Request: Process sending
+        $selected_ids = $this->input->post('subscribers');
+        if (empty($selected_ids)) {
+            $this->session->set_flashdata('error', 'Silakan pilih minimal satu subscriber untuk dikirimi newsletter.');
+            redirect('send/newsletter/' . $id);
+        }
+
         $articles = $this->Newsletter_article_model->get_by_newsletter($id);
         $stats = $this->Market_stat_model->get_by_newsletter($id);
-        $subscribers = $this->Subscriber_model->get_active();
+        $subscribers = $this->Subscriber_model->get_by_ids($selected_ids);
 
         if (empty($subscribers)) {
-            $this->session->set_flashdata('error', 'Tidak ada subscriber aktif untuk dikirimi newsletter.');
-            redirect('newsletters');
+            $this->session->set_flashdata('error', 'Subscriber yang dipilih tidak valid atau tidak aktif.');
+            redirect('send/newsletter/' . $id);
         }
 
         // Trigger compilation & send email
@@ -99,7 +117,7 @@ class Send extends Admin_Controller {
             }
 
             $this->load->model('Send_log_model');
-            $this->Send_log_model->insert([
+            $log_id = $this->Send_log_model->insert([
                 'newsletter_id' => $id,
                 'portal' => $newsletter['portal'],
                 'subject' => $newsletter['subject'],
@@ -108,7 +126,22 @@ class Send extends Admin_Controller {
                 'content_summary' => trim($summary)
             ]);
 
-            $msg = "Newsletter berhasil dikirim ke {$result['success']} subscriber aktif.";
+            // Save individual recipients to DB
+            if (!empty($result['recipients'])) {
+                $recipients_data = [];
+                foreach ($result['recipients'] as $rec) {
+                    $recipients_data[] = [
+                        'send_log_id' => $log_id,
+                        'subscriber_name' => $rec['name'],
+                        'subscriber_email' => $rec['email'],
+                        'status' => $rec['status'],
+                        'error_message' => $rec['error_message']
+                    ];
+                }
+                $this->db->insert_batch('newsletter_send_recipients', $recipients_data);
+            }
+
+            $msg = "Newsletter berhasil dikirim ke {$result['success']} subscriber.";
             if ($result['fail'] > 0) {
                 $msg .= " Gagal mengirim ke {$result['fail']} subscriber (silakan cek log).";
             }

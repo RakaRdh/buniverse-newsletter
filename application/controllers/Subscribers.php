@@ -12,8 +12,13 @@ class Subscribers extends Admin_Controller {
     public function index()
     {
         $search = $this->input->get('search', TRUE);
-        $data['subscribers'] = $this->Subscriber_model->get_all($search);
+        $sort_order = $this->input->get('sort_order', TRUE) ?: 'normal';
+        if (!in_array($sort_order, ['asc', 'desc', 'normal'])) {
+            $sort_order = 'normal';
+        }
+        $data['subscribers'] = $this->Subscriber_model->get_all($search, $sort_order);
         $data['search'] = $search;
+        $data['sort_order'] = $sort_order;
         $data['admin'] = $this->admin;
 
         $this->load->view('admin/subscribers_list', $data);

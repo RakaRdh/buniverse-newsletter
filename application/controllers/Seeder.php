@@ -8,7 +8,6 @@ class Seeder extends CI_Controller {
         parent::__construct();
         $this->load->database();
     }
-
     public function index()
     {
         // 1. Truncate existing data to prevent duplicate seeds
@@ -16,7 +15,85 @@ class Seeder extends CI_Controller {
         $this->db->truncate('market_stats');
         $this->db->truncate('newsletter_articles');
         $this->db->truncate('newsletters');
+        $this->db->truncate('newsletter_send_recipients');
+        $this->db->truncate('newsletter_send_logs');
+        $this->db->truncate('subscribers');
         $this->db->query('SET FOREIGN_KEY_CHECKS = 1;');
+
+        // Seed Subscribers with custom join dates
+        $subscribers = [
+            [
+                'id' => 1,
+                'name' => 'Raka Herdika',
+                'email' => 'raka.herdika.ramadhan.tik23@stu.pnj.ac.id',
+                'status' => 'active',
+                'created_at' => '2025-06-15 10:00:00'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Raka Ramadhan',
+                'email' => 'rakaramadh15@gmail.com',
+                'status' => 'active',
+                'created_at' => '2026-02-10 14:30:00'
+            ],
+            [
+                'id' => 3,
+                'name' => 'Dapa Opodapa',
+                'email' => 'opodapanur@gmail.com',
+                'status' => 'active',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-5 days'))
+            ],
+            [
+                'id' => 4,
+                'name' => 'Kikil Masdapa',
+                'email' => 'kikilmasdapa@gmail.com',
+                'status' => 'active',
+                'created_at' => '2025-09-20 11:15:00'
+            ],
+            [
+                'id' => 5,
+                'name' => 'Ayam Bakar Masdapa',
+                'email' => 'ayambakarmasdapa@gmail.com',
+                'status' => 'active',
+                'created_at' => '2026-01-05 09:45:00'
+            ],
+            [
+                'id' => 6,
+                'name' => 'Budi Santoso',
+                'email' => 'budi.santoso@yahoo.com',
+                'status' => 'active',
+                'created_at' => '2025-11-12 16:20:00'
+            ],
+            [
+                'id' => 7,
+                'name' => 'Siti Aminah',
+                'email' => 'siti.aminah@hotmail.com',
+                'status' => 'active',
+                'created_at' => '2026-04-18 10:30:00'
+            ],
+            [
+                'id' => 8,
+                'name' => 'Andi Wijaya',
+                'email' => 'andi.wijaya@outlook.com',
+                'status' => 'active',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-15 days'))
+            ],
+            [
+                'id' => 9,
+                'name' => 'Dewi Lestari',
+                'email' => 'dewi.lestari@gmail.com',
+                'status' => 'active',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-2 days'))
+            ],
+            [
+                'id' => 10,
+                'name' => 'Eko Prasetyo',
+                'email' => 'eko.prasetyo@gmail.com',
+                'status' => 'inactive',
+                'created_at' => '2025-07-01 08:00:00'
+            ],
+        ];
+        $this->db->insert_batch('subscribers', $subscribers);
 
         // ----------------------------------------------------
         // SEED 1: BERITASATU
@@ -27,10 +104,56 @@ class Seeder extends CI_Controller {
             'volume' => 1,
             'greeting_title' => 'Sahabat Beritasatu, [Nama Subscriber]',
             'greeting_body' => "Banyak hal terjadi hari ini dan kami sudah merangkumnya untuk Anda. Simak berita-berita pilihan berikut, lengkap dengan sudut pandang yang tajam dan terpercaya.\n\nJangan lewatkan juga artikel eksklusif kami di bagian bawah newsletter ini.",
-            'status' => 'draft',
-            'created_at' => date('Y-m-d H:i:s')
+            'status' => 'sent',
+            'sent_at' => date('Y-m-d H:i:s', strtotime('-1 day')),
+            'created_at' => date('Y-m-d H:i:s', strtotime('-1 day'))
         ]);
         $nl1_id = $this->db->insert_id();
+
+        // Seed History Log for Seed 1
+        $this->db->insert('newsletter_send_logs', [
+            'id' => 1,
+            'newsletter_id' => $nl1_id,
+            'portal' => 'beritasatu',
+            'subject' => 'Daily digest - Edisi 01: Asap Karhutla Ganggu Penerbangan',
+            'volume' => 1,
+            'sent_at' => date('Y-m-d H:i:s', strtotime('-1 day')),
+            'recipients_count' => 4,
+            'content_summary' => 'Main Article: Asap Karhutla Ganggu Penerbangan'
+        ]);
+        $log1_id = $this->db->insert_id();
+
+        $recipients = [
+            [
+                'send_log_id' => $log1_id,
+                'subscriber_name' => 'Raka Herdika',
+                'subscriber_email' => 'raka.herdika.ramadhan.tik23@stu.pnj.ac.id',
+                'status' => 'success',
+                'error_message' => NULL
+            ],
+            [
+                'send_log_id' => $log1_id,
+                'subscriber_name' => 'Raka Ramadhan',
+                'subscriber_email' => 'rakaramadh15@gmail.com',
+                'status' => 'success',
+                'error_message' => NULL
+            ],
+            [
+                'send_log_id' => $log1_id,
+                'subscriber_name' => 'Kikil Masdapa',
+                'subscriber_email' => 'kikilmasdapa@gmail.com',
+                'status' => 'success',
+                'error_message' => NULL
+            ],
+            [
+                'send_log_id' => $log1_id,
+                'subscriber_name' => 'Ayam Bakar Masdapa',
+                'subscriber_email' => 'ayambakarmasdapa@gmail.com',
+                'status' => 'success',
+                'error_message' => NULL
+            ]
+        ];
+        $this->db->insert_batch('newsletter_send_recipients', $recipients);
 
         $articles_bs = [
             [

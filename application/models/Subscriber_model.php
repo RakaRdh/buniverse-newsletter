@@ -9,12 +9,21 @@ class Subscriber_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_all($search = '')
+    public function get_all($search = '', $sort_order = 'normal')
     {
         if (!empty($search)) {
+            $this->db->group_start();
             $this->db->like('name', $search);
             $this->db->or_like('email', $search);
+            $this->db->group_end();
         }
+
+        if ($sort_order === 'asc') {
+            $this->db->order_by('created_at', 'ASC');
+        } elseif ($sort_order === 'desc') {
+            $this->db->order_by('created_at', 'DESC');
+        }
+
         $query = $this->db->get('subscribers');
         return $query->result_array();
     }
@@ -65,5 +74,26 @@ class Subscriber_model extends CI_Model {
         // Soft delete: set status to inactive
         $this->db->where('id', $id);
         return $this->db->update('subscribers', ['status' => 'inactive']);
+    }
+
+    public function get_recent($limit = 10)
+    {
+        $this->db->order_by('created_at', 'DESC');
+        $this->db->limit($limit);
+        $query = $this->db->get('subscribers');
+        return $query->result_array();
+    }
+
+    public function count_all()
+    {
+        return $this->db->count_all('subscribers');
+    }
+
+    public function get_by_ids($ids)
+    {
+        if (empty($ids)) return [];
+        $this->db->where_in('id', $ids);
+        $query = $this->db->get('subscribers');
+        return $query->result_array();
     }
 }

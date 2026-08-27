@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? $title : 'CMS' ?> - B-Universe CMS</title>
+    <link rel="shortcut icon" href="<?= base_url('assets/favicon.ico') ?>" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,10 +26,12 @@
         </div>
 
         <?php 
-        $active_portal = '';
-        if (strpos(uri_string(), 'beritasatu') !== false) $active_portal = 'beritasatu';
-        elseif (strpos(uri_string(), 'investor') !== false) $active_portal = 'investor';
-        elseif (strpos(uri_string(), 'jakartaglobe') !== false) $active_portal = 'jakartaglobe';
+        $current_portal = $this->input->get('portal');
+        if (!$current_portal) {
+            if (strpos(uri_string(), 'beritasatu') !== false) $current_portal = 'beritasatu';
+            elseif (strpos(uri_string(), 'investor') !== false) $current_portal = 'investor';
+            elseif (strpos(uri_string(), 'jakartaglobe') !== false) $current_portal = 'jakartaglobe';
+        }
         ?>
 
         <nav class="flex-1 py-6 px-4 space-y-6 overflow-y-auto">
@@ -36,60 +39,73 @@
             <div>
                 <div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Main Menu</div>
                 <div class="space-y-1">
-                    <a href="<?= base_url('newsletters') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'newsletters' || uri_string() === '' || strpos(uri_string(), 'newsletters/templates') === 0) ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
-                        <i class="fa-solid fa-newspaper w-5"></i> Newsletter
+                    <a href="<?= base_url('dashboard') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'dashboard' || uri_string() === '') ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+                        <i class="fa-solid fa-chart-line w-5"></i> Dashboard
                     </a>
-                    <a href="<?= base_url('subscribers') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'subscribers') ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
-                        <i class="fa-solid fa-users w-5"></i> Subscriber
+                    <a href="<?= base_url('newsletters') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'newsletters' && $current_portal === null) ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+                        <i class="fa-solid fa-newspaper w-5"></i> All Newsletters
                     </a>
                 </div>
             </div>
 
             <!-- Contents Group with Dropdowns -->
             <div>
-                <div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Contents</div>
+                <div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Portals</div>
                 <div class="space-y-2">
                     <!-- BeritaSatu Dropdown -->
                     <div>
-                        <button onclick="toggleDropdown('dropdown-beritasatu')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                        <button onclick="toggleDropdown('dropdown-beritasatu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
                             <span class="flex items-center gap-3">
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#EC1C24]"></span> BeritaSatu
                             </span>
                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="dropdown-beritasatu" class="<?= $active_portal === 'beritasatu' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
-                            <a href="<?= base_url('newsletters/add/beritasatu') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters/add/beritasatu') ? 'text-[#EC1C24] font-bold' : '' ?>">Add Content</a>
+                        <div id="dropdown-beritasatu" class="<?= $current_portal === 'beritasatu' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
+                            <a href="<?= base_url('newsletters?portal=beritasatu') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters' && $current_portal === 'beritasatu') ? 'text-[#EC1C24] font-bold' : '' ?>">Newsletter</a>
                             <a href="<?= base_url('logs/beritasatu') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'logs/beritasatu') ? 'text-[#EC1C24] font-bold' : '' ?>">History Logs</a>
                         </div>
                     </div>
 
                     <!-- Investor Dropdown -->
                     <div>
-                        <button onclick="toggleDropdown('dropdown-investor')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                        <button onclick="toggleDropdown('dropdown-investor')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
                             <span class="flex items-center gap-3">
                                 <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Investor.id
                             </span>
                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="dropdown-investor" class="<?= $active_portal === 'investor' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
-                            <a href="<?= base_url('newsletters/add/investor') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters/add/investor') ? 'text-[#20254D] font-bold' : '' ?>">Add Content</a>
+                        <div id="dropdown-investor" class="<?= $current_portal === 'investor' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
+                            <a href="<?= base_url('newsletters?portal=investor') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters' && $current_portal === 'investor') ? 'text-[#20254D] font-bold' : '' ?>">Newsletter</a>
                             <a href="<?= base_url('logs/investor') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'logs/investor') ? 'text-[#20254D] font-bold' : '' ?>">History Logs</a>
                         </div>
                     </div>
 
                     <!-- Jakarta Globe Dropdown -->
                     <div>
-                        <button onclick="toggleDropdown('dropdown-jakartaglobe')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                        <button onclick="toggleDropdown('dropdown-jakartaglobe')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
                             <span class="flex items-center gap-3">
                                 <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span> Jakarta Globe
                             </span>
                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="dropdown-jakartaglobe" class="<?= $active_portal === 'jakartaglobe' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
-                            <a href="<?= base_url('newsletters/add/jakartaglobe') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters/add/jakartaglobe') ? 'text-orange-500 font-bold' : '' ?>">Add Content</a>
+                        <div id="dropdown-jakartaglobe" class="<?= $current_portal === 'jakartaglobe' ? '' : 'hidden' ?> pl-6 mt-1 space-y-1">
+                            <a href="<?= base_url('newsletters?portal=jakartaglobe') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'newsletters' && $current_portal === 'jakartaglobe') ? 'text-orange-500 font-bold' : '' ?>">Newsletter</a>
                             <a href="<?= base_url('logs/jakartaglobe') ?>" class="block py-1.5 px-3 text-xs font-medium rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100/50 <?= (uri_string() === 'logs/jakartaglobe') ? 'text-orange-500 font-bold' : '' ?>">History Logs</a>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Global Group -->
+            <div>
+                <div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">System</div>
+                <div class="space-y-1">
+                    <a href="<?= base_url('logs') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'logs') ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+                        <i class="fa-solid fa-clock-rotate-left w-5"></i> History Logs
+                    </a>
+                    <a href="<?= base_url('subscribers') ?>" class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all <?= (uri_string() === 'subscribers') ? 'border-l-4 border-[#EC1C24] bg-[#20254D]/5 text-[#20254D] font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
+                        <i class="fa-solid fa-users w-5"></i> Subscribers
+                    </a>
                 </div>
             </div>
         </nav>

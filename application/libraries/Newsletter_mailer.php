@@ -72,6 +72,7 @@ class Newsletter_mailer {
         $success_count = 0;
         $fail_count = 0;
         $errors = [];
+        $recipient_results = [];
 
         $is_simulated = empty($this->smtp_user) || (strpos($this->smtp_host, 'mailtrap') !== false && empty($this->smtp_user));
 
@@ -121,6 +122,12 @@ class Newsletter_mailer {
                 $filename = $dir . "{$portal}_vol{$volume}_{$safe_email}_" . time() . ".html";
                 file_put_contents($filename, $html);
                 $success_count++;
+                $recipient_results[] = [
+                    'name' => $sub_name,
+                    'email' => $sub['email'],
+                    'status' => 'success',
+                    'error_message' => NULL
+                ];
             } else {
                 $this->CI->email->clear();
                 $this->CI->email->from($this->smtp_from, strtoupper($portal) . ' Newsletter');
@@ -130,9 +137,22 @@ class Newsletter_mailer {
 
                 if ($this->CI->email->send()) {
                     $success_count++;
+                    $recipient_results[] = [
+                        'name' => $sub_name,
+                        'email' => $sub['email'],
+                        'status' => 'success',
+                        'error_message' => NULL
+                    ];
                 } else {
                     $fail_count++;
-                    $errors[] = "Failed to send to {$sub['email']}: " . $this->CI->email->print_debugger(['headers']);
+                    $err_msg = $this->CI->email->print_debugger(['headers']);
+                    $errors[] = "Failed to send to {$sub['email']}: " . $err_msg;
+                    $recipient_results[] = [
+                        'name' => $sub_name,
+                        'email' => $sub['email'],
+                        'status' => 'failed',
+                        'error_message' => $err_msg
+                    ];
                 }
             }
         }
@@ -140,7 +160,8 @@ class Newsletter_mailer {
         return [
             'success' => $success_count,
             'fail' => $fail_count,
-            'errors' => $errors
+            'errors' => $errors,
+            'recipients' => $recipient_results
         ];
     }
 }

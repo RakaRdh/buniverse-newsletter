@@ -23,8 +23,52 @@ class Send_log_model extends CI_Model {
         return $query->row_array();
     }
 
+    public function get_recent($limit = 10)
+    {
+        $this->db->order_by('sent_at', 'DESC');
+        $this->db->limit($limit);
+        $query = $this->db->get('newsletter_send_logs');
+        return $query->result_array();
+    }
+
+    public function count_all()
+    {
+        return $this->db->count_all('newsletter_send_logs');
+    }
+
     public function insert($data)
     {
-        return $this->db->insert('newsletter_send_logs', $data);
+        $this->db->insert('newsletter_send_logs', $data);
+        return $this->db->insert_id();
+    }
+
+    public function get_filtered_logs($portal = 'all', $start_date = null, $end_date = null, $sort_col = 'sent_at', $sort_order = 'desc')
+    {
+        if ($portal !== 'all') {
+            $this->db->where('portal', $portal);
+        }
+        if (!empty($start_date)) {
+            $this->db->where('sent_at >=', $start_date . ' 00:00:00');
+        }
+        if (!empty($end_date)) {
+            $this->db->where('sent_at <=', $end_date . ' 23:59:59');
+        }
+
+        // Validate sorting column
+        $allowed_cols = ['sent_at', 'recipients_count'];
+        $sort_col_db = 'sent_at';
+        if ($sort_col === 'recipients') {
+            $sort_col_db = 'recipients_count';
+        } elseif (in_array($sort_col, $allowed_cols)) {
+            $sort_col_db = $sort_col;
+        }
+
+        // Validate sort order
+        $sort_order = strtolower($sort_order) === 'asc' ? 'ASC' : 'DESC';
+
+        $this->db->order_by($sort_col_db, $sort_order);
+        
+        $query = $this->db->get('newsletter_send_logs');
+        return $query->result_array();
     }
 }

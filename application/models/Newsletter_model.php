@@ -9,8 +9,11 @@ class Newsletter_model extends CI_Model {
         $this->load->database();
     }
 
-    public function get_all()
+    public function get_all($portal = NULL)
     {
+        if ($portal !== NULL) {
+            $this->db->where('portal', $portal);
+        }
         $this->db->order_by('created_at', 'DESC');
         $query = $this->db->get('newsletters');
         return $query->result_array();
@@ -82,5 +85,10 @@ class Newsletter_model extends CI_Model {
     {
         $this->db->where('id', $id);
         return $this->db->delete('newsletters');
+    }
+
+    public function count_all()
+    {
+        return $this->db->count_all('newsletters');
     }
 }

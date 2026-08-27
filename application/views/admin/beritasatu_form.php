@@ -80,6 +80,10 @@
                                 <input type="text" name="articles[0][category]" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#20254D]" required value="<?= htmlspecialchars($main_art['category']) ?>">
                             </div>
                             <div>
+                                <label class="block text-xs font-bold text-slate-650 uppercase mb-1">Article URL / Link</label>
+                                <input type="url" name="articles[0][url]" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#20254D]" placeholder="https://example.com/article" value="<?= htmlspecialchars(isset($main_art['url']) ? $main_art['url'] : '') ?>">
+                            </div>
+                            <div>
                                 <label class="block text-xs font-bold text-slate-650 uppercase mb-1">Excerpt / Description</label>
                                 <textarea name="articles[0][excerpt]" rows="3" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#20254D]"><?= htmlspecialchars($main_art['excerpt']) ?></textarea>
                             </div>
@@ -142,6 +146,11 @@
                                     </label>
                                     <div class="text-[9px] text-amber-600 font-bold hidden" id="status_<?= $field_idx ?>">Uploading...</div>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-650 mb-1">Article URL / Link</label>
+                                <input type="url" name="articles[<?= $field_idx ?>][url]" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#20254D]" placeholder="https://example.com/article" value="<?= htmlspecialchars(isset($art['url']) ? $art['url'] : '') ?>">
                             </div>
 
                             <div class="h-20 border border-slate-200 rounded-lg overflow-hidden flex items-center justify-center bg-white" id="preview_<?= $field_idx ?>">

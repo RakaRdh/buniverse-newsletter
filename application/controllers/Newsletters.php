@@ -13,8 +13,27 @@ class Newsletters extends Admin_Controller {
 
     public function index()
     {
-        $data['newsletters'] = $this->Newsletter_model->get_all();
+        $portal = $this->input->get('portal');
+        $allowed_portals = ['beritasatu', 'investor', 'jakartaglobe'];
+        if ($portal !== NULL && !in_array($portal, $allowed_portals)) {
+            show_404();
+        }
+
+        $data['newsletters'] = $this->Newsletter_model->get_all($portal);
+        $data['portal'] = $portal;
         $data['admin'] = $this->admin;
+
+        // Title
+        if ($portal === 'beritasatu') {
+            $data['title'] = 'BeritaSatu Newsletters';
+        } elseif ($portal === 'investor') {
+            $data['title'] = 'Investor Daily Newsletters';
+        } elseif ($portal === 'jakartaglobe') {
+            $data['title'] = 'Jakarta Globe Newsletters';
+        } else {
+            $data['title'] = 'All Newsletters';
+        }
+
         $this->load->view('admin/newsletter_list', $data);
     }
 
@@ -94,7 +113,8 @@ class Newsletters extends Admin_Controller {
                             'title' => $art['title'],
                             'excerpt' => isset($art['excerpt']) ? $art['excerpt'] : '',
                             'category' => isset($art['category']) ? $art['category'] : '',
-                            'image_url' => isset($art['image_url']) ? $art['image_url'] : ''
+                            'image_url' => isset($art['image_url']) ? $art['image_url'] : '',
+                            'url' => isset($art['url']) ? $art['url'] : ''
                         ]);
                     }
                 }
@@ -124,7 +144,7 @@ class Newsletters extends Admin_Controller {
             }
 
             $this->session->set_flashdata('success', 'Newsletter berhasil diperbarui.');
-            redirect('logs/' . $portal);
+            redirect('newsletters?portal=' . $portal);
         } else {
             $new_id = $this->Newsletter_model->insert($db_data);
 
@@ -138,7 +158,8 @@ class Newsletters extends Admin_Controller {
                             'title' => $art['title'],
                             'excerpt' => isset($art['excerpt']) ? $art['excerpt'] : '',
                             'category' => isset($art['category']) ? $art['category'] : '',
-                            'image_url' => isset($art['image_url']) ? $art['image_url'] : ''
+                            'image_url' => isset($art['image_url']) ? $art['image_url'] : '',
+                            'url' => isset($art['url']) ? $art['url'] : ''
                         ]);
                     }
                 }
@@ -222,13 +243,23 @@ class Newsletters extends Admin_Controller {
         redirect('newsletters');
     }
 
-    public function preview($id)
+    public function detail($id)
     {
         $data['newsletter'] = $this->Newsletter_model->get_by_id($id);
         if (!$data['newsletter']) {
             show_404();
         }
-        $this->load->view('admin/newsletter_preview', $data);
+
+        $this->load->model('Send_log_model');
+        $send_log = $this->db->get_where('newsletter_send_logs', ['newsletter_id' => $id])->row_array();
+        
+        $data['recipients'] = [];
+        $data['send_log'] = $send_log;
+        if ($send_log) {
+            $data['recipients'] = $this->db->get_where('newsletter_send_recipients', ['send_log_id' => $send_log['id']])->result_array();
+        }
+
+        $this->load->view('admin/newsletter_detail', $data);
     }
 
     public function render_html($id)

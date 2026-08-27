@@ -101,14 +101,14 @@
                       <?php if (!empty($main_article['image_url'])): ?>
                       <tr>
                         <td style="padding-bottom: 12px;">
-                          <img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" />
+                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                         </td>
                       </tr>
                       <?php endif; ?>
                       <tr>
                         <td style="padding-bottom: 8px;">
                           <h2 style="margin: 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                            <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($main_article['title']) ?></a>
+                            <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($main_article['title']) ?></a>
                           </h2>
                         </td>
                       </tr>
@@ -135,7 +135,7 @@
                       ?>
                       <tr>
                         <td style="padding: 10px 0; border-bottom: <?= $borderBottom ?>; <?= $borderTop ? 'border-top: ' . $borderTop . ';' : '' ?>">
-                          <a href="#" style="font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; color: #222222; text-decoration: none; line-height: 20px; display: block;">
+                          <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; color: #222222; text-decoration: none; line-height: 20px; display: block;">
                             <?= htmlspecialchars($art['title']) ?>
                           </a>
                         </td>
@@ -176,7 +176,7 @@
                           <!-- Full width text -->
                           <td width="100%" valign="middle" style="font-family: 'Inter', sans-serif;">
                             <h3 style="margin: 0 0 8px 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                              <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
+                              <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                             </h3>
                             <p style="margin: 0; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; color: #555555; line-height: 20px;">
                               <?= htmlspecialchars($art['excerpt']) ?>
@@ -185,11 +185,11 @@
                         <?php elseif ($index % 2 === 0): ?>
                           <!-- Left Image, Right Text -->
                           <td width="45%" style="width: 45%; padding-right: 20px;" valign="middle">
-                            <img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" />
+                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                           </td>
                           <td width="52%" style="width: 52%;" valign="middle" style="font-family: 'Inter', sans-serif;">
                             <h3 style="margin: 0 0 8px 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                              <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
+                              <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                             </h3>
                             <p style="margin: 0; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; color: #555555; line-height: 20px;">
                               <?= htmlspecialchars($art['excerpt']) ?>
@@ -199,14 +199,14 @@
                           <!-- Right Image, Left Text -->
                           <td width="52%" style="width: 52%; padding-right: 20px;" valign="middle" style="font-family: 'Inter', sans-serif;">
                             <h3 style="margin: 0 0 8px 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                              <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
+                              <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                             </h3>
                             <p style="margin: 0; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; color: #555555; line-height: 20px;">
                               <?= htmlspecialchars($art['excerpt']) ?>
                             </p>
                           </td>
                           <td width="45%" style="width: 45%;" valign="middle">
-                            <img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" />
+                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $art['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 0;" /></a>
                           </td>
                         <?php endif; ?>
                       </tr>

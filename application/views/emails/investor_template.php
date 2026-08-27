@@ -15,6 +15,11 @@
         max-width: 100% !important;
         height: auto !important;
       }
+      .stats-table {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+      }
     }
   </style>
 </head>
@@ -42,19 +47,19 @@
               </table>
             </td>
           </tr>
-
+ 
           <!-- 2. Header Banner Image -->
           <tr>
             <td style="padding: 0 20px 30px 20px;">
               <img class="responsive-img" src="https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-header.png" width="560" height="233" alt="Investor Briefing Banner" style="display: block; width: 100%; max-width: 100%; height: auto; border: 0; border-radius: 8px;" />
             </td>
           </tr>
-
+ 
           <!-- 3. Market Stats Section -->
           <?php if (!empty($market_stats)): ?>
           <tr>
             <td align="center" style="padding: 0 20px 30px 20px;">
-              <table border="0" cellpadding="0" cellspacing="0" width="563" height="72" style="background-color: #E8F5FF; border-top: 0.5px dashed #1E6CA1; border-bottom: 0.5px dashed #1E6CA1; width: 563px; height: 72px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="563" height="72" class="stats-table" style="background-color: #E8F5FF; border-top: 0.5px dashed #1E6CA1; border-bottom: 0.5px dashed #1E6CA1; width: 563px; height: 72px;">
                 <tr>
                   <td style="padding: 15px 10px; padding-top: 15px; padding-bottom: 15px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -83,7 +88,7 @@
             </td>
           </tr>
           <?php endif; ?>
-
+ 
           <!-- 4. Morning Insight -->
           <tr>
             <td style="padding: 0 20px 30px 20px;">
@@ -101,7 +106,7 @@
               </table>
             </td>
           </tr>
-
+ 
           <!-- 5. News List -->
           <tr>
             <td style="padding: 0 20px 35px 20px;">
@@ -116,13 +121,13 @@
                         <!-- Image Left -->
                         <?php if (!empty($main_article['image_url'])): ?>
                         <td width="45%" style="width: 45%;" valign="top">
-                          <img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" />
+                          <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="responsive-img" src="<?= $main_article['image_url'] ?>" width="267" height="178" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" /></a>
                         </td>
                         <?php endif; ?>
                         <!-- Content Right -->
                         <td width="<?= !empty($main_article['image_url']) ? '52%' : '100%' ?>" style="width: <?= !empty($main_article['image_url']) ? '52%' : '100%' ?>; padding-left: <?= !empty($main_article['image_url']) ? '3%' : '0' ?>;" valign="top" style="font-family: Arial, sans-serif;">
                           <h3 style="margin: 0 0 8px 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 14px; line-height: 20px; color: #111111;">
-                            <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($main_article['title']) ?></a>
+                            <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($main_article['title']) ?></a>
                           </h3>
                           <p style="margin: 0; font-family: Arial, sans-serif; font-weight: 400; font-size: 12px; line-height: 20px; color: #555555;">
                             <?= htmlspecialchars($main_article['excerpt']) ?>
@@ -133,7 +138,7 @@
                   </td>
                 </tr>
                 <?php endif; ?>
-
+ 
                 <!-- List Articles -->
                 <?php foreach ($list_articles as $art): ?>
                 <tr>
@@ -141,7 +146,7 @@
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td>
-                          <a href="#" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?> - <span style="font-weight: 400; font-style: italic; color: #777;"><?= htmlspecialchars($art['category']) ?></span></a>
+                          <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="color: #111111; text-decoration: none;"><?= htmlspecialchars($art['title']) ?></a>
                         </td>
                       </tr>
                     </table>

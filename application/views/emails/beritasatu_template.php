@@ -21,6 +21,11 @@
       .body-text {
         font-size: 11px !important;
       }
+      .divider-table {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
     }
   </style>
 </head>
@@ -121,7 +126,7 @@
                 <?php if (!empty($main_article['image_url'])): ?>
                 <tr>
                   <td style="padding-bottom: 15px;">
-                    <img class="hero-image" src="<?= $main_article['image_url'] ?>" width="560" height="315" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" />
+                    <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none;"><img class="hero-image" src="<?= $main_article['image_url'] ?>" width="560" height="315" alt="<?= htmlspecialchars($main_article['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; border: 0;" /></a>
                   </td>
                 </tr>
                 <?php endif; ?>
@@ -129,7 +134,7 @@
                 <tr>
                   <td style="padding-bottom: 8px;">
                     <h2 style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                      <a href="#" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($main_article['title']) ?></a>
+                      <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($main_article['title']) ?></a>
                     </h2>
                   </td>
                 </tr>
@@ -153,7 +158,7 @@
           <!-- 3. Rectangle Divider -->
           <tr>
             <td align="center" style="padding: 0 20px 30px 20px;">
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #323232; width: 100%; height: 52px; text-align: center;">
+              <table border="0" cellpadding="0" cellspacing="0" width="560" class="divider-table" style="background-color: #323232; width: 560px; height: 52px; text-align: center;">
                 <tr>
                   <td style="vertical-align: middle;">
                     <span style="color: #ffffff; font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; line-height: 100%;">
@@ -177,17 +182,17 @@
                   <?php foreach ($row as $colIndex => $art): ?>
                   <td width="48%" style="width: 48%;" valign="top">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                      <?php if (!empty($art['image_url'])): ?>
+                       <?php if (!empty($art['image_url'])): ?>
                       <tr>
                         <td style="padding-bottom: 12px;">
-                          <img class="grid-image" src="<?= $art['image_url'] ?>" width="270" height="152" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 4px; border: 0;" />
+                          <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none;"><img class="grid-image" src="<?= $art['image_url'] ?>" width="270" height="152" alt="<?= htmlspecialchars($art['title']) ?>" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 4px; border: 0;" /></a>
                         </td>
                       </tr>
                       <?php endif; ?>
                       <tr>
                         <td style="padding-bottom: 8px;">
                           <h3 style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                            <a href="#" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($art['title']) ?></a>
+                            <a href="<?= !empty($art['url']) ? $art['url'] : '#' ?>" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($art['title']) ?></a>
                           </h3>
                         </td>
                       </tr>
