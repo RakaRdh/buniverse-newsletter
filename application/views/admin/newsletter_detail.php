@@ -5,8 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newsletter Detail: <?= htmlspecialchars($newsletter['subject']) ?></title>
     <link rel="shortcut icon" href="<?= base_url('assets/favicon.ico') ?>" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: {
+                            50: '#FFF6F1',
+                            100: '#FDE6DB',
+                            500: '#F2622C',
+                            600: '#E6531F',
+                        },
+                        ink: {
+                            50: '#F7F5F2',
+                            150: '#EDE9E4',
+                            300: '#D8D2CC',
+                            500: '#8A817B',
+                            700: '#524B47',
+                            900: '#231F1D',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -90,7 +119,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            min-height: 0; /* Important for nested scroll */
+            min-height: 0;
         }
 
         .section-title {
@@ -225,15 +254,15 @@
             background: #E6531F;
         }
 
-        /* Right Side: Iframe Preview Container */
+        /* Right Side: Viewport Switcher Container */
         .preview-viewport-wrapper {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 24px;
             overflow: auto;
-            background-color: #EDE9E4; /* darker neutral tone to make email template pop */
+            background-color: #EDE9E4;
+            transition: all 0.3s ease;
         }
 
         .iframe-wrapper {
@@ -244,27 +273,29 @@
             border: 1px solid #D8D2CC;
             height: 100%;
             width: 100%;
-            max-width: 800px;
             display: flex;
             flex-direction: column;
         }
 
         .iframe-wrapper.desktop {
             width: 100%;
-            max-width: 800px;
+            max-width: 100%;
             height: 100%;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
         }
 
         .iframe-wrapper.tablet {
             width: 768px;
+            max-width: 100%;
             height: 100%;
-            max-height: 1024px;
         }
 
         .iframe-wrapper.mobile {
             width: 375px;
+            max-width: 100%;
             height: 100%;
-            max-height: 667px;
         }
 
         iframe {
@@ -273,11 +304,14 @@
             border: none;
             border-radius: 8px;
         }
+        .iframe-wrapper.desktop iframe {
+            border-radius: 0;
+        }
     </style>
 </head>
 <body>
     <!-- Left Sidebar: Details & Recipients -->
-    <div class="detail-sidebar">
+    <div class="detail-sidebar font-sans">
         <div class="sidebar-header">
             <span class="brand-tag brand-<?= htmlspecialchars($newsletter['portal']) ?>">
                 <?php 
@@ -291,7 +325,7 @@
                 <div class="meta-item">
                     <i class="fa-solid fa-file-invoice"></i> Edition: Vol <?= htmlspecialchars($newsletter['volume']) ?>
                 </div>
-                <div class="meta-item">
+                <div class="meta-item" style="font-variant-numeric: tabular-nums;">
                     <i class="fa-solid fa-calendar"></i> <?= !empty($newsletter['sent_at']) ? date('d M Y, H:i', strtotime($newsletter['sent_at'])) : 'Draft' ?>
                 </div>
             </div>
@@ -302,19 +336,19 @@
                 <h2 class="section-title">
                     <span>Recipients History</span>
                     <?php if ($newsletter['status'] === 'sent' && $send_log): ?>
-                        <span class="badge-count"><?= htmlspecialchars($send_log['recipients_count']) ?> Sent</span>
+                        <span class="badge-count" style="font-variant-numeric: tabular-nums;"><?= htmlspecialchars($send_log['recipients_count']) ?> Sent</span>
                     <?php endif; ?>
                 </h2>
 
                 <?php if ($newsletter['status'] === 'draft'): ?>
                     <div class="draft-notice">
-                        <i class="fa-solid fa-circle-info text-lg mb-2 block"></i>
+                        <i class="fa-solid fa-circle-info text-lg mb-2 block text-accent-500"></i>
                         Newsletter ini masih berstatus <strong>Draft</strong> dan belum pernah dikirimkan ke subscriber mana pun.
                     </div>
                 <?php else: ?>
                     <div class="recipients-list-wrapper">
                         <?php if (empty($recipients)): ?>
-                            <div class="p-6 text-center text-slate-400 text-xs">
+                            <div class="p-6 text-center text-ink-500 text-xs">
                                 Tidak ada log penerima detail untuk pengiriman ini.
                             </div>
                         <?php else: ?>
@@ -329,8 +363,8 @@
                                     <?php foreach ($recipients as $rec): ?>
                                         <tr>
                                             <td>
-                                                <div class="rec-name"><?= htmlspecialchars($rec['subscriber_name']) ?></div>
-                                                <div class="rec-email"><?= htmlspecialchars($rec['subscriber_email']) ?></div>
+                                                <div class="rec-name text-xs"><?= htmlspecialchars($rec['subscriber_name']) ?></div>
+                                                <div class="rec-email text-[10px]"><?= htmlspecialchars($rec['subscriber_email']) ?></div>
                                             </td>
                                             <td style="text-align: right;">
                                                 <span class="status-badge status-<?= $rec['status'] ?>">
@@ -360,9 +394,9 @@
     </div>
 
     <!-- Right Area: Live HTML Preview with Viewport Switcher -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden font-sans">
         <!-- Preview Toolbar -->
-        <div class="h-14 bg-white border-b border-ink-150 px-6 flex items-center justify-between">
+        <div class="h-14 bg-white border-b border-ink-150 px-6 flex items-center justify-between z-10">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-envelope text-ink-500"></i>
                 <span class="text-xs font-bold font-jakarta text-ink-900 uppercase tracking-wider">Inbox Preview</span>
@@ -370,43 +404,78 @@
             
             <!-- Viewport Switcher Buttons -->
             <div class="flex items-center bg-ink-50 p-1 rounded-lg border border-ink-150">
-                <button onclick="setViewport('desktop')" id="tab-desktop" class="viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md border-b-2 border-accent-500 text-ink-900 bg-accent-50/50 transition-all">
-                    <i class="fa-solid fa-desktop"></i> Desktop
+                <button onclick="setViewport('desktop')" id="tab-desktop" class="viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-desktop text-[11px]"></i> Desktop
                 </button>
-                <button onclick="setViewport('tablet')" id="tab-tablet" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all">
-                    <i class="fa-solid fa-tablet-screen-button"></i> Tablet
+                <button onclick="setViewport('tablet')" id="tab-tablet" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-tablet-screen-button text-[11px]"></i> Tablet
                 </button>
-                <button onclick="setViewport('mobile')" id="tab-mobile" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all">
-                    <i class="fa-solid fa-mobile-screen-button"></i> Mobile
+                <button onclick="setViewport('mobile')" id="tab-mobile" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-mobile-screen-button text-[11px]"></i> Mobile
                 </button>
             </div>
         </div>
         
         <!-- Viewport Wrapper Container -->
-        <div class="preview-viewport-wrapper">
-            <div id="iframe-wrapper" class="iframe-wrapper desktop">
-                <iframe src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>"></iframe>
+        <div id="preview-viewport-container" class="preview-viewport-wrapper relative">
+            <!-- Loading Spinner -->
+            <div id="preview-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-[#EDE9E4] z-20 transition-opacity duration-300">
+                <div class="flex flex-col items-center gap-3">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-accent-500"></i>
+                    <span class="text-xs text-ink-700 font-bold font-jakarta uppercase tracking-wider">Loading Preview...</span>
+                </div>
+            </div>
+
+            <div id="iframe-wrapper" class="iframe-wrapper desktop opacity-0 transition-opacity duration-300">
+                <iframe id="preview-iframe" src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>" onload="onIframeLoad()"></iframe>
             </div>
         </div>
     </div>
 
     <script>
+        function onIframeLoad() {
+            const spinner = document.getElementById('preview-loading');
+            const wrapper = document.getElementById('iframe-wrapper');
+            if (spinner) {
+                spinner.classList.add('opacity-0');
+                setTimeout(() => spinner.remove(), 300);
+            }
+            if (wrapper) {
+                wrapper.classList.remove('opacity-0');
+            }
+        }
+
         function setViewport(device) {
             const wrapper = document.getElementById('iframe-wrapper');
+            const container = document.getElementById('preview-viewport-container');
             const tabs = document.querySelectorAll('.viewport-tab');
             
             // Remove active classes
             tabs.forEach(tab => {
-                tab.className = 'viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all';
+                tab.className = 'viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-700 hover:bg-ink-150 hover:text-ink-900 transition-all';
             });
             
             // Add active classes to clicked tab
             const activeTab = document.getElementById('tab-' + device);
-            activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md border-b-2 border-accent-500 text-ink-900 bg-accent-50/50 transition-all';
+            activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md bg-accent-500 text-white shadow-sm transition-all';
             
             // Update wrapper class
             wrapper.className = 'iframe-wrapper ' + device;
+            
+            // Update container padding & style dynamically
+            if (device === 'desktop') {
+                container.style.padding = '0';
+                container.style.backgroundColor = '#ffffff';
+            } else {
+                container.style.padding = '24px';
+                container.style.backgroundColor = '#EDE9E4';
+            }
         }
+
+        // Initialize state on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setViewport('desktop');
+        });
     </script>
 </body>
 </html>
