@@ -6,126 +6,104 @@
   <title>Login - B-Universe CMS</title>
   <link rel="shortcut icon" href="<?= base_url('assets/favicon.ico') ?>" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    accent: {
+                        50: '#FFF6F1',
+                        100: '#FDE6DB',
+                        500: '#F2622C',
+                        600: '#E6531F',
+                    },
+                    ink: {
+                        50: '#F7F5F2',
+                        150: '#EDE9E4',
+                        300: '#D8D2CC',
+                        500: '#8A817B',
+                        700: '#524B47',
+                        900: '#231F1D',
+                    }
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                    jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+                }
+            }
+        }
+    }
+  </script>
   <style>
     body { 
       font-family: 'Inter', sans-serif;
-      background-color: #FAFAFC;
-    }
-
-    /* Asymmetric & Amorphous Keyframe Animations */
-    @keyframes fluidRed {
-      0%, 100% {
-        border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-        transform: translate(0px, 0px) rotate(0deg) scale(1);
-      }
-      25% {
-        border-radius: 68% 32% 27% 73% / 55% 23% 77% 45%;
-        transform: translate(80px, 40px) rotate(90deg) scale(1.15);
-      }
-      50% {
-        border-radius: 23% 77% 52% 48% / 30% 65% 35% 70%;
-        transform: translate(120px, -60px) rotate(180deg) scale(0.9);
-      }
-      75% {
-        border-radius: 75% 25% 69% 31% / 39% 70% 30% 61%;
-        transform: translate(-40px, 50px) rotate(270deg) scale(1.05);
-      }
-    }
-
-    @keyframes fluidNavy {
-      0%, 100% {
-        border-radius: 63% 37% 30% 70% / 50% 70% 30% 50%;
-        transform: translate(0px, 0px) rotate(0deg) scale(1);
-      }
-      33% {
-        border-radius: 30% 70% 70% 30% / 22% 58% 42% 78%;
-        transform: translate(-100px, -70px) rotate(-120deg) scale(1.2);
-      }
-      66% {
-        border-radius: 78% 22% 45% 55% / 68% 35% 65% 32%;
-        transform: translate(50px, -110px) rotate(-240deg) scale(0.85);
-      }
-    }
-
-    /* Top-Left Red Family Morph */
-    .morph-red-topleft {
-      animation: fluidRed 18s ease-in-out infinite;
-      background: radial-gradient(circle at 30% 30%, #FF5258 0%, #EC1C24 50%, #990B10 100%);
-    }
-
-    /* Bottom-Right Navy Family Morph */
-    .morph-navy-bottomright {
-      animation: fluidNavy 22s ease-in-out infinite;
-      background: radial-gradient(circle at 70% 70%, #3B4480 0%, #20254D 50%, #0D1026 100%);
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-slate-50">
-
-  <!-- TWO DYNAMIC FLUID MORPH ELEMENTS -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-    <div class="morph-red-topleft absolute -top-28 -left-28 w-[650px] h-[650px] opacity-75 blur-2xl mix-blend-multiply"></div>
-    <div class="morph-navy-bottomright absolute -bottom-28 -right-28 w-[700px] h-[700px] opacity-75 blur-2xl mix-blend-multiply"></div>
-  </div>
+<body class="min-h-screen flex items-center justify-center p-4 bg-ink-50 text-ink-900 font-sans">
 
   <!-- Centered Login Card -->
-  <main class="w-full max-w-md bg-white/85 backdrop-blur-xl rounded-2xl shadow-2xl p-8 md:p-10 relative z-10 border border-white/60">
-    <div class="text-center mb-8">
-      <!-- Brand Icon: Dark Navy containing Accent Red logo letter -->
-      <div class="w-12 h-12 bg-[#20254D] rounded-xl flex items-center justify-center text-[#EC1C24] font-bold text-2xl mx-auto mb-3 shadow-lg shadow-[#20254D]/20">
+  <main class="w-full max-w-sm bg-white rounded-lg border border-ink-150 p-6 md:p-8">
+    <div class="text-center mb-6">
+      <div class="w-10 h-10 bg-ink-900 rounded-md flex items-center justify-center text-white font-bold text-lg mx-auto mb-2 font-jakarta">
         B
       </div>
-      <h1 class="text-2xl font-bold text-[#20254D] tracking-tight">Welcome Back!</h1>
-      <p class="text-sm text-slate-500 mt-1">Please enter your details to sign in.</p>
+      <h1 class="text-base font-bold font-jakarta text-ink-900 tracking-tight">Sign In to CMS</h1>
+      <p class="text-xs text-ink-500 mt-0.5">Please enter your details to sign in.</p>
     </div>
 
     <?php if ($this->session->flashdata('error')): ?>
-        <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-5 text-center">
+        <div class="bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2 rounded-md text-xs mb-4 text-center">
             <?= $this->session->flashdata('error') ?>
         </div>
     <?php endif; ?>
 
-    <?= form_open('admin/authenticate', ['class' => 'space-y-5']) ?>
+    <?= form_open('admin/authenticate', ['class' => 'space-y-4']) ?>
       <div>
-        <label for="username" class="block text-sm font-semibold text-slate-700 mb-1.5">Username</label>
-        <input type="text" name="username" id="username" class="w-full px-4 py-2.5 text-sm bg-slate-50/80 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#20254D]/20 focus:border-[#20254D] transition-all" placeholder="admin_user" required>
+        <label for="username" class="block text-[11px] font-bold text-ink-700 uppercase mb-1.5">Username</label>
+        <input type="text" name="username" id="username" class="w-full h-9 px-3 text-xs bg-white border border-ink-300 rounded-lg text-ink-900 placeholder-ink-500 focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-100 transition-all" placeholder="admin" required>
       </div>
 
       <div>
-        <label for="password" class="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
+        <label for="password" class="block text-[11px] font-bold text-ink-700 uppercase mb-1.5">Password</label>
         <div class="relative">
-          <input type="password" name="password" id="password" class="w-full px-4 py-2.5 pr-10 text-sm bg-slate-50/80 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#20254D]/20 focus:border-[#20254D] transition-all" placeholder="••••••••" required>
-          <button type="button" onclick="togglePassword()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
-            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <input type="password" name="password" id="password" class="w-full h-9 px-3 pr-9 text-xs bg-white border border-ink-300 rounded-lg text-ink-900 placeholder-ink-500 focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-100 transition-all" placeholder="••••••••" required>
+          <button type="button" onclick="togglePassword()" class="absolute right-2.5 top-2.5 text-ink-500 hover:text-ink-900">
+            <i id="eye-icon" class="fa-solid fa-eye text-xs"></i>
           </button>
         </div>
       </div>
 
-      <div class="flex items-center justify-between text-xs sm:text-sm">
-        <label class="flex items-center text-slate-600 cursor-pointer">
-          <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-[#20254D] focus:ring-[#20254D]/20">
-          <span class="ml-2 font-medium">Remember me</span>
-        </label>
-        <a href="#" class="font-semibold text-[#EC1C24] hover:underline">Forgot password?</a>
-      </div>
-
-      <button type="submit" class="w-full py-3 px-4 bg-[#20254D] hover:bg-[#161a38] text-white font-semibold rounded-xl shadow-xl shadow-[#20254D]/20 active:scale-[0.99] transition-all duration-150">
+      <button type="submit" class="w-full py-2 px-4 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-[6px] text-xs transition-all shadow-sm">
         Sign In
       </button>
-
-      <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500">
-        <p class="font-medium text-slate-600">Default Credentials:</p>
-        <p class="mt-1">Username: <span class="font-semibold text-slate-800">admin</span> | Password: <span class="font-semibold text-slate-800">123</span></p>
-      </div>
     </form>
+
+    <!-- Admin credentials hint box -->
+    <div class="mt-5 p-3.5 bg-accent-50 border border-accent-100 rounded-lg text-xs text-ink-900 flex items-start gap-2.5">
+        <i class="fa-solid fa-circle-info text-accent-600 mt-0.5"></i>
+        <div>
+            <span class="font-bold">Login Info:</span>
+            <p class="mt-0.5">Use <code class="bg-white px-1 py-0.5 border border-accent-100 rounded font-mono">admin</code> / <code class="bg-white px-1 py-0.5 border border-accent-100 rounded font-mono">123</code> to access the dashboard.</p>
+        </div>
+    </div>
   </main>
 
   <script>
     function togglePassword() {
       const passwordInput = document.getElementById('password');
-      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      const eyeIcon = document.getElementById('eye-icon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
     }
   </script>
 </body>

@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newsletter Detail: <?= htmlspecialchars($newsletter['subject']) ?></title>
     <link rel="shortcut icon" href="<?= base_url('assets/favicon.ico') ?>" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: #f1f5f9;
-            color: #334155;
+            background-color: #F7F5F2;
+            color: #231F1D;
             display: flex;
             height: 100vh;
             overflow: hidden;
@@ -28,7 +28,7 @@
             width: 420px;
             min-width: 420px;
             background-color: #ffffff;
-            border-right: 1px solid #e2e8f0;
+            border-right: 1px solid #EDE9E4;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -36,7 +36,7 @@
 
         .sidebar-header {
             padding: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #EDE9E4;
         }
 
         .brand-tag {
@@ -45,25 +45,27 @@
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             text-transform: uppercase;
             margin-bottom: 0.75rem;
         }
 
-        .brand-beritasatu { background: rgba(227, 6, 19, 0.15); color: #EC1C24; border: 1px solid rgba(227, 6, 19, 0.3); }
-        .brand-investor { background: rgba(10, 61, 145, 0.15); color: #2563eb; border: 1px solid rgba(10, 61, 145, 0.3); }
-        .brand-jakartaglobe { background: rgba(255, 122, 0, 0.15); color: #ea580c; border: 1px solid rgba(255, 122, 0, 0.3); }
+        .brand-beritasatu { background: #FBE6E2; color: #C4432E; border: 1px solid rgba(196, 67, 46, 0.2); }
+        .brand-investor { background: #E7EFF7; color: #3A6FA8; border: 1px solid rgba(58, 111, 168, 0.2); }
+        .brand-jakartaglobe { background: #FBEFDD; color: #B8791A; border: 1px solid rgba(184, 121, 26, 0.2); }
 
         .newsletter-subject {
             font-size: 1.1rem;
             font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             line-height: 1.4;
-            color: #0f172a;
+            color: #231F1D;
             margin-bottom: 0.5rem;
         }
 
         .newsletter-meta {
             font-size: 0.8rem;
-            color: #64748b;
+            color: #8A817B;
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -94,9 +96,10 @@
         .section-title {
             font-size: 0.8rem;
             font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #64748b;
+            color: #8A817B;
             margin-bottom: 0.75rem;
             display: flex;
             justify-content: space-between;
@@ -104,20 +107,20 @@
         }
 
         .badge-count {
-            background: #f1f5f9;
-            color: #0f172a;
+            background: #F7F5F2;
+            color: #231F1D;
             padding: 2px 6px;
             border-radius: 10px;
             font-size: 0.7rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #EDE9E4;
         }
 
         .recipients-list-wrapper {
             flex: 1;
             overflow-y: auto;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #EDE9E4;
             border-radius: 8px;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .recipients-table {
@@ -129,29 +132,29 @@
 
         .recipients-table th {
             padding: 8px 12px;
-            background: #f1f5f9;
-            border-bottom: 1px solid #e2e8f0;
+            background: #F7F5F2;
+            border-bottom: 1px solid #EDE9E4;
             font-weight: 600;
-            color: #64748b;
+            color: #524B47;
         }
 
         .recipients-table td {
             padding: 10px 12px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #EDE9E4;
             vertical-align: middle;
         }
 
         .recipients-table tr:hover {
-            background: #f1f5f9/30;
+            background: #FFF6F1/30;
         }
 
         .rec-name {
             font-weight: 600;
-            color: #1e293b;
+            color: #231F1D;
         }
 
         .rec-email {
-            color: #64748b;
+            color: #8A817B;
             font-size: 0.7rem;
             margin-top: 2px;
         }
@@ -166,23 +169,23 @@
             text-transform: uppercase;
         }
 
-        .status-success { background: rgba(16, 185, 129, 0.15); color: #059669; }
-        .status-failed { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+        .status-success { background: #E4F3EC; color: #2E7D5B; }
+        .status-failed { background: #FBE6E2; color: #C4432E; }
 
         .draft-notice {
-            background: #fef9c3;
-            border: 1px dashed #fef08a;
+            background: #FBEFDD;
+            border: 1px dashed #D8D2CC;
             border-radius: 8px;
             padding: 1rem;
             text-align: center;
-            color: #713f12;
+            color: #B8791A;
             font-size: 0.8rem;
             line-height: 1.5;
         }
 
         .sidebar-footer {
             padding: 1.25rem 1.5rem;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #EDE9E4;
             display: flex;
             gap: 10px;
             background-color: #ffffff;
@@ -207,40 +210,68 @@
         }
 
         .btn-close {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            color: #475569;
+            background: #F7F5F2;
+            border: 1px solid #D8D2CC;
+            color: #231F1D;
         }
         .btn-close:hover {
-            background: #e2e8f0;
+            background: #EDE9E4;
         }
 
         .btn-send {
-            background: #EC1C24;
+            background: #F2622C;
         }
         .btn-send:hover {
-            background: #c9121a;
+            background: #E6531F;
         }
 
         /* Right Side: Iframe Preview Container */
-        .preview-container {
+        .preview-viewport-wrapper {
             flex: 1;
             display: flex;
             justify-content: center;
-            background-color: #0f172a;
+            align-items: center;
             padding: 24px;
-            overflow: hidden;
+            overflow: auto;
+            background-color: #EDE9E4; /* darker neutral tone to make email template pop */
+        }
+
+        .iframe-wrapper {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            box-shadow: 0 12px 32px rgba(35, 31, 29, 0.08);
+            border-radius: 8px;
+            border: 1px solid #D8D2CC;
             height: 100%;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iframe-wrapper.desktop {
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+        }
+
+        .iframe-wrapper.tablet {
+            width: 768px;
+            height: 100%;
+            max-height: 1024px;
+        }
+
+        .iframe-wrapper.mobile {
+            width: 375px;
+            height: 100%;
+            max-height: 667px;
         }
 
         iframe {
             width: 100%;
-            max-width: 680px;
             height: 100%;
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            background-color: #ffffff;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -328,9 +359,54 @@
         </div>
     </div>
 
-    <!-- Right Area: Live HTML Iframe -->
-    <div class="preview-container">
-        <iframe src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>"></iframe>
+    <!-- Right Area: Live HTML Preview with Viewport Switcher -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        <!-- Preview Toolbar -->
+        <div class="h-14 bg-white border-b border-ink-150 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-ink-500"></i>
+                <span class="text-xs font-bold font-jakarta text-ink-900 uppercase tracking-wider">Inbox Preview</span>
+            </div>
+            
+            <!-- Viewport Switcher Buttons -->
+            <div class="flex items-center bg-ink-50 p-1 rounded-lg border border-ink-150">
+                <button onclick="setViewport('desktop')" id="tab-desktop" class="viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md border-b-2 border-accent-500 text-ink-900 bg-accent-50/50 transition-all">
+                    <i class="fa-solid fa-desktop"></i> Desktop
+                </button>
+                <button onclick="setViewport('tablet')" id="tab-tablet" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all">
+                    <i class="fa-solid fa-tablet-screen-button"></i> Tablet
+                </button>
+                <button onclick="setViewport('mobile')" id="tab-mobile" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Mobile
+                </button>
+            </div>
+        </div>
+        
+        <!-- Viewport Wrapper Container -->
+        <div class="preview-viewport-wrapper">
+            <div id="iframe-wrapper" class="iframe-wrapper desktop">
+                <iframe src="<?= base_url('newsletters/render_html/' . $newsletter['id']) ?>"></iframe>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function setViewport(device) {
+            const wrapper = document.getElementById('iframe-wrapper');
+            const tabs = document.querySelectorAll('.viewport-tab');
+            
+            // Remove active classes
+            tabs.forEach(tab => {
+                tab.className = 'viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-500 hover:bg-ink-50 hover:text-ink-900 transition-all';
+            });
+            
+            // Add active classes to clicked tab
+            const activeTab = document.getElementById('tab-' + device);
+            activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md border-b-2 border-accent-500 text-ink-900 bg-accent-50/50 transition-all';
+            
+            // Update wrapper class
+            wrapper.className = 'iframe-wrapper ' + device;
+        }
+    </script>
 </body>
 </html>
