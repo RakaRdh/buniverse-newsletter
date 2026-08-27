@@ -31,50 +31,18 @@ Sebelum menjalankan aplikasi ini, pastikan Anda telah menginstal komponen beriku
 
 Ikuti langkah-langkah di bawah untuk memasang project ini secara lokal:
 
-### 1. Konfigurasi Berkas Environment (.env)
-Buat berkas baru bernama `.env` di direktori utama `BackendCMS`, lalu isi dengan konfigurasi berikut:
-
-```ini
-# Database Configuration
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=rakaherdika15
-DB_NAME=buniverse-newsletter
-
-# JWT Configuration
-JWT_SECRET=your_jwt_secret_key_here
-
-# SMTP Configuration
-SMTP_HOST=sandbox.smtp.mailtrap.io
-SMTP_PORT=2525
-SMTP_USER=your_smtp_user
-SMTP_PASS=your_smtp_password
-SMTP_CRYPTO=
-
-# Supabase Storage Configuration
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your_supabase_service_key
-SUPABASE_BUCKET=newsletter-images
-```
-
-Sesuaikan nilai-nilai di atas dengan kredensial database lokal, server SMTP, serta bucket API Supabase Anda.
-
-> [!WARNING]
-> Jangan pernah mem-push berkas `.env` asli ke repositori Git. Berkas `.env` telah secara otomatis ditambahkan ke dalam `.gitignore`.
-
-
-### 2. Instal Dependensi Vendor
+### 1. Instal Dependensi Vendor
 Jalankan composer install untuk mengunduh semua library yang tertera di `composer.json`:
 ```bash
 composer install
 ```
 
-### 3. Impor Database
+### 2. Impor Database
 1. Buat database baru di MySQL dengan nama `buniverse-newsletter` (atau sesuaikan dengan konfigurasi `.env` Anda).
 2. Impor berkas SQL database yang terletak di folder utama project:
    - File: `db_buniverse-newsletter.sql`
 
-### 4. Konfigurasi Web Server
+### 3. Konfigurasi Web Server
 Pastikan folder utama `BackendCMS` dapat diakses melalui web server lokal Anda (misalnya `http://localhost/BackendCMS/` atau melalui virtual host seperti `http://newsletter-cms.local/`).
 
 ---
