@@ -2,61 +2,12 @@
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.9.0"
-    },
-    "api/debug.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_config.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_config3.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_direct.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_read_full.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_ci_config.php": {
-      "runtime": "vercel-php@0.9.0"
-    },
-    "api/test_require.php": {
-      "runtime": "vercel-php@0.9.0"
     }
   },
   "routes": [
     {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
-    },
-    {
-      "src": "/api/debug.php",
-      "dest": "/api/debug.php"
-    },
-    {
-      "src": "/api/test_config.php",
-      "dest": "/api/test_config.php"
-    },
-    {
-      "src": "/api/test_config3.php",
-      "dest": "/api/test_config3.php"
-    },
-    {
-      "src": "/api/test_direct.php",
-      "dest": "/api/test_direct.php"
-    },
-    {
-      "src": "/api/test_read_full.php",
-      "dest": "/api/test_read_full.php"
-    },
-    {
-      "src": "/api/test_ci_config.php",
-      "dest": "/api/test_ci_config.php"
-    },
-    {
-      "src": "/api/test_require.php",
-      "dest": "/api/test_require.php"
     },
     {
       "src": "/(.*)",
