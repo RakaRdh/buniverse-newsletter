@@ -22,7 +22,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
 |
-$is_vercel = isset($_SERVER['VERCEL']) 
+$is_vercel = (strpos(__FILE__, '/var/task') === 0)
+             || (getenv('VERCEL') == '1')
+             || isset($_SERVER['VERCEL']) 
              || isset($_SERVER['HTTP_X_VERCEL_DEPLOYMENT_URL']) 
              || (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && strpos($_SERVER['HTTP_X_FORWARDED_HOST'], 'vercel.app') !== false) 
              || (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'vercel.app') !== false);
