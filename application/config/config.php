@@ -53,7 +53,7 @@ if ($is_vercel) {
 
 $config['base_url'] = $protocol . "://" . $http_host . $path;
 
-if (isset($_GET['debug_base_url'])) {
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'debug_base_url') !== false) {
     echo "RESOLVED BASE URL: " . $config['base_url'] . "\n";
     echo "IS VERCEL: " . ($is_vercel ? 'YES' : 'NO') . "\n";
     echo "PROTOCOL: " . $protocol . "\n";
