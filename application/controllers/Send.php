@@ -126,19 +126,26 @@ class Send extends Admin_Controller {
                 'content_summary' => trim($summary)
             ]);
 
-            // Save individual recipients to DB
+            // Save individual recipients to Appwrite
             if (!empty($result['recipients'])) {
-                $recipients_data = [];
+                $db = $this->appwrite_client->get_databases();
+                $db_id = $this->appwrite_client->get_db_id();
                 foreach ($result['recipients'] as $rec) {
-                    $recipients_data[] = [
-                        'send_log_id' => $log_id,
+                    $rec_payload = [
+                        'send_log_id' => (string)$log_id,
                         'subscriber_name' => $rec['name'],
                         'subscriber_email' => $rec['email'],
-                        'status' => $rec['status'],
-                        'error_message' => $rec['error_message']
+                        'status' => $rec['status']
                     ];
+                    if (!empty($rec['error_message'])) {
+                        $rec_payload['error_message'] = $rec['error_message'];
+                    }
+                    try {
+                        $db->createDocument($db_id, 'newsletter_send_recipients', \Appwrite\ID::unique(), $rec_payload);
+                    } catch (\Exception $e) {
+                        log_message('error', 'Appwrite recipient insert error: ' . $e->getMessage());
+                    }
                 }
-                $this->db->insert_batch('newsletter_send_recipients', $recipients_data);
             }
 
             $msg = "Newsletter berhasil dikirim ke {$result['success']} subscriber.";

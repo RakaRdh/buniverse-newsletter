@@ -11,7 +11,7 @@ class Admin extends MY_Controller {
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             $decoded = $this->jwt->decode($token, $key);
             if ($decoded && $decoded->username === 'admin') {
-                redirect('newsletters');
+                redirect('dashboard');
             }
         }
 
@@ -43,7 +43,7 @@ class Admin extends MY_Controller {
             ];
             $this->input->set_cookie($cookie);
 
-            redirect('newsletters');
+            redirect('dashboard');
         } else {
             $this->session->set_flashdata('error', 'Username atau Password salah!');
             redirect('admin/login');

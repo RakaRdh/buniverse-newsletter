@@ -1,111 +1,220 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Appwrite\Query;
+use Appwrite\ID;
+
 class Subscriber_model extends CI_Model {
+
+    protected $db_id;
+    protected $databases;
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
+        $this->databases = $this->appwrite_client->get_databases();
+        $this->db_id = $this->appwrite_client->get_db_id();
     }
 
     public function get_all($search = '', $sort_order = 'normal', $limit = NULL, $offset = NULL)
     {
+        $queries = [];
+
         if (!empty($search)) {
-            $this->db->group_start();
-            $this->db->like('name', $search);
-            $this->db->or_like('email', $search);
-            $this->db->group_end();
+            $queries[] = Query::or([
+                Query::search('name', $search),
+                Query::search('email', $search)
+            ]);
         }
 
         if ($sort_order === 'asc') {
-            $this->db->order_by('created_at', 'ASC');
+            $queries[] = Query::orderAsc('created_at');
         } elseif ($sort_order === 'desc') {
-            $this->db->order_by('created_at', 'DESC');
+            $queries[] = Query::orderDesc('created_at');
         }
 
-        if ($limit !== NULL && $offset !== NULL) {
-            $this->db->limit($limit, $offset);
-        } elseif ($limit !== NULL) {
-            $this->db->limit($limit);
+        if ($limit !== NULL) {
+            $queries[] = Query::limit((int)$limit);
+        }
+        if ($offset !== NULL) {
+            $queries[] = Query::offset((int)$offset);
         }
 
-        $query = $this->db->get('subscribers');
-        return $query->result_array();
+        try {
+            $res = $this->databases->listDocuments($this->db_id, 'subscribers', $queries);
+            $res_arr = $res->toArray();
+            $docs = $res_arr['documents'] ?? [];
+            foreach ($docs as &$doc) {
+                $doc['id'] = $doc['$id'];
+            }
+            return $docs;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite get_all subscribers error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     public function get_active()
     {
-        $query = $this->db->get_where('subscribers', ['status' => 'active']);
-        return $query->result_array();
+        try {
+            $res = $this->databases->listDocuments($this->db_id, 'subscribers', [
+                Query::equal('status', 'active'),
+                Query::limit(100)
+            ]);
+            $res_arr = $res->toArray();
+            $docs = $res_arr['documents'] ?? [];
+            foreach ($docs as &$doc) {
+                $doc['id'] = $doc['$id'];
+            }
+            return $docs;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite get_active subscribers error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     public function get_by_id($id)
     {
-        $query = $this->db->get_where('subscribers', ['id' => $id]);
-        return $query->row_array();
+        try {
+            $doc_obj = $this->databases->getDocument($this->db_id, 'subscribers', (string)$id);
+            $doc = $doc_obj->toArray();
+            $doc['id'] = $doc['$id'];
+            return $doc;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite get_by_id subscriber error: ' . $e->getMessage());
+            return NULL;
+        }
     }
 
     public function get_by_email($email)
     {
-        $query = $this->db->get_where('subscribers', ['email' => $email]);
-        return $query->row_array();
+        try {
+            $res = $this->databases->listDocuments($this->db_id, 'subscribers', [
+                Query::equal('email', $email),
+                Query::limit(1)
+            ]);
+            $res_arr = $res->toArray();
+            $docs = $res_arr['documents'] ?? [];
+            if (!empty($docs)) {
+                $doc = $docs[0];
+                $doc['id'] = $doc['$id'];
+                return $doc;
+            }
+            return NULL;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite get_by_email subscriber error: ' . $e->getMessage());
+            return NULL;
+        }
     }
 
     public function insert($data)
     {
-        return $this->db->insert('subscribers', $data);
+        try {
+            if (!isset($data['created_at'])) {
+                $data['created_at'] = date('c');
+            }
+            unset($data['id']);
+            $this->databases->createDocument($this->db_id, 'subscribers', ID::unique(), $data);
+            return TRUE;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite insert subscriber error: ' . $e->getMessage());
+            return FALSE;
+        }
     }
 
     public function insert_batch($data)
     {
         if (empty($data)) return 0;
-        return $this->db->insert_batch('subscribers', $data);
+        $count = 0;
+        foreach ($data as $row) {
+            if ($this->insert($row)) {
+                $count++;
+            }
+        }
+        return $count;
     }
 
     public function update($id, $data)
     {
-        $this->db->where('id', $id);
-        return $this->db->update('subscribers', $data);
+        try {
+            unset($data['id']);
+            unset($data['$id']);
+            $this->databases->updateDocument($this->db_id, 'subscribers', (string)$id, $data);
+            return TRUE;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite update subscriber error: ' . $e->getMessage());
+            return FALSE;
+        }
     }
 
     public function update_by_email($email, $data)
     {
-        $this->db->where('email', $email);
-        return $this->db->update('subscribers', $data);
+        try {
+            $sub = $this->get_by_email($email);
+            if ($sub) {
+                return $this->update($sub['id'], $data);
+            }
+            return FALSE;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite update_by_email subscriber error: ' . $e->getMessage());
+            return FALSE;
+        }
     }
 
     public function delete($id)
     {
         // Soft delete: set status to inactive
-        $this->db->where('id', $id);
-        return $this->db->update('subscribers', ['status' => 'inactive']);
+        return $this->update($id, ['status' => 'inactive']);
     }
 
     public function get_recent($limit = 10)
     {
-        $this->db->order_by('created_at', 'DESC');
-        $this->db->limit($limit);
-        $query = $this->db->get('subscribers');
-        return $query->result_array();
+        try {
+            $res = $this->databases->listDocuments($this->db_id, 'subscribers', [
+                Query::orderDesc('created_at'),
+                Query::limit((int)$limit)
+            ]);
+            $res_arr = $res->toArray();
+            $docs = $res_arr['documents'] ?? [];
+            foreach ($docs as &$doc) {
+                $doc['id'] = $doc['$id'];
+            }
+            return $docs;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite get_recent subscribers error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     public function count_all($search = '')
     {
+        $queries = [Query::limit(1)];
         if (!empty($search)) {
-            $this->db->group_start();
-            $this->db->like('name', $search);
-            $this->db->or_like('email', $search);
-            $this->db->group_end();
+            $queries[] = Query::or([
+                Query::search('name', $search),
+                Query::search('email', $search)
+            ]);
         }
-        return $this->db->count_all_results('subscribers');
+        try {
+            $res = $this->databases->listDocuments($this->db_id, 'subscribers', $queries);
+            $res_arr = $res->toArray();
+            return $res_arr['total'] ?? 0;
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite count_all subscribers error: ' . $e->getMessage());
+            return 0;
+        }
     }
 
     public function get_by_ids($ids)
     {
         if (empty($ids)) return [];
-        $this->db->where_in('id', $ids);
-        $query = $this->db->get('subscribers');
-        return $query->result_array();
+        $docs = [];
+        foreach ($ids as $id) {
+            $sub = $this->get_by_id($id);
+            if ($sub) {
+                $docs[] = $sub;
+            }
+        }
+        return $docs;
     }
 }

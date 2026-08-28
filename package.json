@@ -1,0 +1,25 @@
+{
+  "name": "backendcms",
+  "version": "1.0.0",
+  "description": "Sistem Backend CMS (Content Management System) yang dibangun menggunakan **CodeIgniter 3** untuk mengelola, membuat, dan mengirim newsletter untuk berbagai portal berita di bawah naungan B-Universe (BeritaSatu, Investor, dan Jakarta Globe).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RakaRdh/buniverse-newsletter-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RakaRdh/buniverse-newsletter-backend/issues"
+  },
+  "homepage": "https://github.com/RakaRdh/buniverse-newsletter-backend#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "mysql2": "^3.24.2",
+    "node-appwrite": "^28.0.0"
+  }
+}

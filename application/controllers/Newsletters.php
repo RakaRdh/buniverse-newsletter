@@ -291,12 +291,40 @@ class Newsletters extends Admin_Controller {
         }
 
         $this->load->model('Send_log_model');
-        $send_log = $this->db->get_where('newsletter_send_logs', ['newsletter_id' => $id])->row_array();
+        $db = $this->appwrite_client->get_databases();
+        $db_id = $this->appwrite_client->get_db_id();
+        
+        $send_log = null;
+        try {
+            $res = $db->listDocuments($db_id, 'newsletter_send_logs', [
+                \Appwrite\Query::equal('newsletter_id', (string)$id),
+                \Appwrite\Query::limit(1)
+            ]);
+            $res_arr = $res->toArray();
+            if (!empty($res_arr['documents'])) {
+                $send_log = $res_arr['documents'][0];
+                $send_log['id'] = $send_log['$id'];
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Appwrite send log retrieval error: ' . $e->getMessage());
+        }
         
         $data['recipients'] = [];
         $data['send_log'] = $send_log;
         if ($send_log) {
-            $data['recipients'] = $this->db->get_where('newsletter_send_recipients', ['send_log_id' => $send_log['id']])->result_array();
+            try {
+                $res_rec = $db->listDocuments($db_id, 'newsletter_send_recipients', [
+                    \Appwrite\Query::equal('send_log_id', (string)$send_log['id']),
+                    \Appwrite\Query::limit(100)
+                ]);
+                $res_rec_arr = $res_rec->toArray();
+                $data['recipients'] = $res_rec_arr['documents'] ?? [];
+                foreach ($data['recipients'] as &$rec) {
+                    $rec['id'] = $rec['$id'];
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Appwrite recipients retrieval error: ' . $e->getMessage());
+            }
         }
 
         $this->load->view('admin/newsletter_detail', $data);
