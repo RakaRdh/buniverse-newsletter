@@ -62,6 +62,12 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'debug_bas
     exit;
 }
 
+@file_put_contents(
+    sys_get_temp_dir() . '/debug_redirect.log', 
+    date('Y-m-d H:i:s') . " | URI: " . ($_SERVER['REQUEST_URI'] ?? 'N/A') . " | HOST: " . ($_SERVER['HTTP_HOST'] ?? 'N/A') . " | X-HOST: " . ($_SERVER['HTTP_X_FORWARDED_HOST'] ?? 'N/A') . " | BASE_URL: " . ($config['base_url'] ?? 'N/A') . " | IS_VERCEL: " . ($is_vercel ? 'YES' : 'NO') . "\n", 
+    FILE_APPEND
+);
+
 /*
 |--------------------------------------------------------------------------
 | Index File
