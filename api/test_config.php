@@ -2,6 +2,7 @@
 header('Content-Type: text/plain');
 define('BASEPATH', '1');
 define('APPPATH', __DIR__ . '/../application/');
+define('FCPATH', __DIR__ . '/../');
 include __DIR__ . '/../application/config/config.php';
 echo "BASE URL: " . $config['base_url'] . "\n";
 echo "IS VERCEL: " . ($is_vercel ? 'YES' : 'NO') . "\n";
