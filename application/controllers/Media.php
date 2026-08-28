@@ -25,7 +25,8 @@ class Media extends Admin_Controller {
         }
 
         // Target temp file path for compressed JPEG
-        $tempJpgPath = APPPATH . 'cache/compressed-' . time() . '-' . uniqid() . '.jpg';
+        $tempDir = (getenv('VERCEL') || !is_writable(APPPATH . 'cache')) ? sys_get_temp_dir() : (APPPATH . 'cache');
+        $tempJpgPath = rtrim($tempDir, '/\\') . DIRECTORY_SEPARATOR . 'compressed-' . time() . '-' . uniqid() . '.jpg';
         
         // Compress and convert the uploaded temp file to JPEG
         $compressed = $this->image_optimizer->compress_to_jpg($_FILES['image']['tmp_name'], $tempJpgPath, 75);

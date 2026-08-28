@@ -85,7 +85,8 @@ class Subscribers extends Admin_Controller {
             redirect('subscribers');
         }
 
-        $config['upload_path']   = './application/cache/';
+        $tempDir = (getenv('VERCEL') || !is_writable('./application/cache/')) ? sys_get_temp_dir() : './application/cache/';
+        $config['upload_path']   = rtrim($tempDir, '/\\') . DIRECTORY_SEPARATOR;
         $config['allowed_types'] = 'csv|txt';
         $config['max_size']      = 2048; // 2MB
         
