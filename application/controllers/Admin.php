@@ -7,7 +7,7 @@ class Admin extends MY_Controller {
     {
         $token = $this->input->cookie('auth_token');
         if ($token) {
-            $this->load->library('jwt');
+            $this->load->library('JWT');
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             $decoded = $this->jwt->decode($token, $key);
             if ($decoded && $decoded->username === 'admin') {
@@ -24,7 +24,7 @@ class Admin extends MY_Controller {
         $password = $this->input->post('password');
 
         if ($username === 'admin' && $password === '123') {
-            $this->load->library('jwt');
+            $this->load->library('JWT');
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             
             $payload = [
