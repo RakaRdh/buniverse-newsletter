@@ -18,7 +18,7 @@ class Admin_Controller extends MY_Controller {
             redirect('admin/login');
         }
         
-        $this->load->library('jwt');
+        $this->load->library('JWT');
         $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
         $decoded = $this->jwt->decode($token, $key);
         
