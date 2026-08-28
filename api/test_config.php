@@ -3,10 +3,13 @@ header('Content-Type: text/plain');
 define('BASEPATH', '1');
 define('APPPATH', __DIR__ . '/../application/');
 define('FCPATH', __DIR__ . '/../');
-include __DIR__ . '/../application/config/config.php';
-echo "BASE URL: " . $config['base_url'] . "\n";
-echo "IS VERCEL: " . ($is_vercel ? 'YES' : 'NO') . "\n";
-echo "PROTOCOL: " . $protocol . "\n";
-echo "HTTP HOST: " . $http_host . "\n";
-echo "PATH: " . $path . "\n";
-echo "FILE PATH: " . __FILE__ . "\n";
+
+$config_file = __DIR__ . '/../application/config/config.php';
+echo "FILE EXISTS: " . (file_exists($config_file) ? "YES" : "NO") . "\n";
+echo "FILE CONTENT PREVIEW:\n";
+echo substr(file_get_contents($config_file), 0, 1000) . "\n";
+
+include $config_file;
+
+echo "\n=== DUMP CONFIG ===\n";
+print_r($config);
