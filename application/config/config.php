@@ -22,10 +22,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
 |
-$is_secure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$is_vercel = isset($_SERVER['VERCEL']) 
+             || isset($_SERVER['HTTP_X_VERCEL_DEPLOYMENT_URL']) 
+             || (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && strpos($_SERVER['HTTP_X_FORWARDED_HOST'], 'vercel.app') !== false) 
+             || (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'vercel.app') !== false);
+
+$is_secure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
+             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+             || $is_vercel;
+
 $protocol = $is_secure ? 'https' : 'http';
-$http_host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8000');
-$path = getenv('VERCEL') ? '/' : str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+
+if ($is_vercel) {
+    if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+        $http_host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+    } elseif (isset($_SERVER['HTTP_X_VERCEL_DEPLOYMENT_URL'])) {
+        $http_host = $_SERVER['HTTP_X_VERCEL_DEPLOYMENT_URL'];
+    } elseif (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'localhost') === false) {
+        $http_host = $_SERVER['HTTP_HOST'];
+    } else {
+        $http_host = 'buniverse-newsletter.vercel.app';
+    }
+    $path = '/';
+} else {
+    $http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost:8000';
+    $path = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+}
+
 $config['base_url'] = $protocol . "://" . $http_host . $path;
 
 /*
