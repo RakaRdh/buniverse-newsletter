@@ -77,7 +77,7 @@
                           </div>
                           <!-- 1 Fokus Topik -->
                           <div style="width: 100%; height: 20px; font-size: 11px; font-weight: bold; color: #cccccc; line-height: 20px;">
-                            <?= !empty($main_article['category']) ? htmlspecialchars($main_article['category']) : '1 Fokus Topik' ?>
+                            1 Topik Utama
                           </div>
                         </td>
                       </tr>
@@ -101,7 +101,10 @@
                           <?php endif; ?>
                           
                           <div class="body-text" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; line-height: 140%; color: #e5e5e5;">
-                            <?= nl2br(htmlspecialchars($greeting_body)) ?>
+                            <?php 
+                              $default_greeting = "Banyak hal terjadi hari ini dan kami sudah merangkumnya untuk Anda. Simak berita-berita pilihan berikut, lengkap dengan sudut pandang yang tajam dan terpercaya.\n\nJangan lewatkan juga artikel eksklusif kami di bagian bawah newsletter ini.";
+                              echo nl2br(htmlspecialchars(!empty($greeting_body) ? $greeting_body : $default_greeting));
+                            ?>
                           </div>
                         </td>
                       </tr>
@@ -147,7 +150,7 @@
                 <!-- Tag Kategori -->
                 <tr>
                   <td style="padding-bottom: 30px;">
-                    <span style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 400; line-height: 20px; color: #797878;">Nasional</span>
+                    <span style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 400; line-height: 20px; color: #797878;"><?= !empty($main_article['category']) ? htmlspecialchars($main_article['category']) : 'Nasional' ?></span>
                   </td>
                 </tr>
               </table>

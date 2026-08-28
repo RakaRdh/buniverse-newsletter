@@ -70,8 +70,8 @@
                             <input type="text" name="articles[0][title]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required placeholder="Main headline title">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-ink-700 mb-1">Header Label (e.g. 1 Fokus Topik)</label>
-                            <input type="text" name="articles[0][category]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required value="1 Fokus Topik" placeholder="e.g. 1 Fokus Topik">
+                            <label class="block text-xs font-bold text-ink-700 mb-1">Header Label (e.g. Nasional)</label>
+                            <input type="text" name="articles[0][category]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required value="Nasional" placeholder="e.g. Nasional">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-ink-700 mb-1">Article URL / Link</label>

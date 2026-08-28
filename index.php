@@ -1,4 +1,12 @@
 <?php
+// Support pretty URLs for PHP Built-in web server (php -S)
+if (php_sapi_name() === 'cli-server') {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (file_exists(__DIR__ . $path) && is_file(__DIR__ . $path)) {
+        return false;
+    }
+}
+
 /**
  * Load Environment Variables from .env
  */

@@ -230,7 +230,7 @@ class Newsletters extends Admin_Controller {
             }
 
             $this->session->set_flashdata('success', 'Newsletter berhasil dibuat.');
-            redirect('logs/' . $portal);
+            redirect('newsletters?portal=' . $portal);
         }
     }
 

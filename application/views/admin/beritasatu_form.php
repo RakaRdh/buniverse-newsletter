@@ -73,8 +73,8 @@
                                     <input type="text" name="articles[0][title]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required value="<?= htmlspecialchars($main_art['title']) ?>">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-ink-750 mb-1">HEADER LABEL (e.g. 1 Fokus Topik)</label>
-                                    <input type="text" name="articles[0][category]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required value="<?= htmlspecialchars($main_art['category'] ?: '1 Fokus Topik') ?>">
+                                    <label class="block text-xs font-bold text-ink-750 mb-1">HEADER LABEL (e.g. Nasional)</label>
+                                    <input type="text" name="articles[0][category]" class="w-full h-9 px-3 py-1.5 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" required value="<?= htmlspecialchars($main_art['category'] ?: 'Nasional') ?>">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-ink-750 mb-1">ARTICLE URL / LINK</label>
