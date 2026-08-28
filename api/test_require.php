@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: text/plain');
+define('FCPATH', __DIR__ . '/../');
 
 function test_include() {
     static $config;
