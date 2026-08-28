@@ -3,6 +3,7 @@ header('Content-Type: text/plain');
 chdir(dirname(__DIR__));
 define('BASEPATH', __DIR__ . '/../system/');
 define('APPPATH', __DIR__ . '/../application/');
+define('ENVIRONMENT', 'development');
 define('VIEWPATH', __DIR__ . '/../application/views/');
 define('FCPATH', __DIR__ . '/../');
 
