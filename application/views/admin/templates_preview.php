@@ -30,7 +30,7 @@
                         1 featured main article, floating greeting box, and a 2x2 grid of secondary news.
                     </td>
                     <td class="p-3 text-right pr-4">
-                        <a href="<?= base_url('newsletters/detail/1') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
+                        <a href="<?= base_url('newsletters/detail/nl1') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
                             <i class="fa-solid fa-eye text-ink-500 text-[11px]"></i> Preview
                         </a>
                     </td>
@@ -46,7 +46,7 @@
                         Stock market tickers stats, market morning insight paragraph, and list of news.
                     </td>
                     <td class="p-3 text-right pr-4">
-                        <a href="<?= base_url('newsletters/detail/2') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
+                        <a href="<?= base_url('newsletters/detail/nl2') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
                             <i class="fa-solid fa-eye text-ink-500 text-[11px]"></i> Preview
                         </a>
                     </td>
@@ -62,7 +62,7 @@
                         Overlay banner, sidebar related links column, and alternating feed topics.
                     </td>
                     <td class="p-3 text-right pr-4">
-                        <a href="<?= base_url('newsletters/detail/3') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
+                        <a href="<?= base_url('newsletters/detail/nl3') ?>" class="inline-flex items-center justify-center gap-1.5 py-1.5 px-3 bg-white hover:bg-ink-50 text-ink-900 border border-ink-300 rounded-[6px] text-xs font-semibold transition-all shadow-sm" target="_blank">
                             <i class="fa-solid fa-eye text-ink-500 text-[11px]"></i> Preview
                         </a>
                     </td>
