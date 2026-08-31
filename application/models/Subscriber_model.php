@@ -28,9 +28,9 @@ class Subscriber_model extends CI_Model {
         }
 
         if ($sort_order === 'asc') {
-            $queries[] = Query::orderAsc('created_at');
+            $queries[] = Query::orderAsc('$createdAt');
         } elseif ($sort_order === 'desc') {
-            $queries[] = Query::orderDesc('created_at');
+            $queries[] = Query::orderDesc('$createdAt');
         }
 
         if ($limit !== NULL) {
@@ -46,6 +46,7 @@ class Subscriber_model extends CI_Model {
             $docs = $res_arr['documents'] ?? [];
             foreach ($docs as &$doc) {
                 $doc['id'] = $doc['$id'];
+                $doc['created_at'] = $doc['$createdAt'];
             }
             return $docs;
         } catch (\Exception $e) {
@@ -65,6 +66,7 @@ class Subscriber_model extends CI_Model {
             $docs = $res_arr['documents'] ?? [];
             foreach ($docs as &$doc) {
                 $doc['id'] = $doc['$id'];
+                $doc['created_at'] = $doc['$createdAt'];
             }
             return $docs;
         } catch (\Exception $e) {
@@ -79,6 +81,7 @@ class Subscriber_model extends CI_Model {
             $doc_obj = $this->databases->getDocument($this->db_id, 'subscribers', (string)$id);
             $doc = $doc_obj->toArray();
             $doc['id'] = $doc['$id'];
+            $doc['created_at'] = $doc['$createdAt'];
             return $doc;
         } catch (\Exception $e) {
             log_message('error', 'Appwrite get_by_id subscriber error: ' . $e->getMessage());
@@ -98,6 +101,7 @@ class Subscriber_model extends CI_Model {
             if (!empty($docs)) {
                 $doc = $docs[0];
                 $doc['id'] = $doc['$id'];
+                $doc['created_at'] = $doc['$createdAt'];
                 return $doc;
             }
             return NULL;
@@ -110,10 +114,8 @@ class Subscriber_model extends CI_Model {
     public function insert($data)
     {
         try {
-            if (!isset($data['created_at'])) {
-                $data['created_at'] = date('c');
-            }
             unset($data['id']);
+            unset($data['created_at']);
             $this->databases->createDocument($this->db_id, 'subscribers', ID::unique(), $data);
             return TRUE;
         } catch (\Exception $e) {
@@ -139,6 +141,7 @@ class Subscriber_model extends CI_Model {
         try {
             unset($data['id']);
             unset($data['$id']);
+            unset($data['created_at']);
             $this->databases->updateDocument($this->db_id, 'subscribers', (string)$id, $data);
             return TRUE;
         } catch (\Exception $e) {
@@ -171,13 +174,14 @@ class Subscriber_model extends CI_Model {
     {
         try {
             $res = $this->databases->listDocuments($this->db_id, 'subscribers', [
-                Query::orderDesc('created_at'),
+                Query::orderDesc('$createdAt'),
                 Query::limit((int)$limit)
             ]);
             $res_arr = $res->toArray();
             $docs = $res_arr['documents'] ?? [];
             foreach ($docs as &$doc) {
                 $doc['id'] = $doc['$id'];
+                $doc['created_at'] = $doc['$createdAt'];
             }
             return $docs;
         } catch (\Exception $e) {

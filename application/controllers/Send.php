@@ -123,7 +123,8 @@ class Send extends Admin_Controller {
                 'subject' => $newsletter['subject'],
                 'volume' => $newsletter['volume'],
                 'recipients_count' => $result['success'],
-                'content_summary' => trim($summary)
+                'content_summary' => trim($summary),
+                'sent_by' => isset($this->admin->name) ? $this->admin->name : 'System'
             ]);
 
             // Save individual recipients to Appwrite

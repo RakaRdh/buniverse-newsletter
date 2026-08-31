@@ -22,7 +22,7 @@ class Admin_Controller extends MY_Controller {
         $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
         $decoded = $this->jwt->decode($token, $key);
         
-        if (!$decoded || $decoded->username !== 'admin') {
+        if (!$decoded || !isset($decoded->username)) {
             delete_cookie('auth_token');
             redirect('admin/login');
         }

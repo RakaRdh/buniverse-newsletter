@@ -167,11 +167,19 @@ class Newsletters extends Admin_Controller {
                     $stats_to_insert = [];
                     $order = 1;
                     foreach ($stats as $label => $val) {
-                        if (!empty($val['value'])) {
+                        if (isset($val['value']) && $val['value'] !== '') {
+                            $raw_val = trim($val['value']);
+                            $cleaned_val = str_replace(['+', '-', '%'], '', $raw_val);
+                            if (is_numeric($cleaned_val)) {
+                                $prefix = ($val['direction'] === 'down') ? '-' : '+';
+                                $formatted_val = $prefix . $cleaned_val . '%';
+                            } else {
+                                $formatted_val = $raw_val;
+                            }
                             $stats_to_insert[] = [
                                 'newsletter_id' => $id,
                                 'label' => $label,
-                                'value' => $val['value'],
+                                'value' => $formatted_val,
                                 'direction' => $val['direction'],
                                 'sort_order' => $order++
                             ];
@@ -182,6 +190,10 @@ class Newsletters extends Admin_Controller {
                     }
                 }
             }
+
+            // Clear stats cache
+            $this->load->driver('cache', array('adapter' => 'file'));
+            $this->cache->delete('dashboard_stats');
 
             $this->session->set_flashdata('success', 'Newsletter berhasil diperbarui.');
             redirect('newsletters?portal=' . $portal);
@@ -213,11 +225,19 @@ class Newsletters extends Admin_Controller {
                     $stats_to_insert = [];
                     $order = 1;
                     foreach ($stats as $label => $val) {
-                        if (!empty($val['value'])) {
+                        if (isset($val['value']) && $val['value'] !== '') {
+                            $raw_val = trim($val['value']);
+                            $cleaned_val = str_replace(['+', '-', '%'], '', $raw_val);
+                            if (is_numeric($cleaned_val)) {
+                                $prefix = ($val['direction'] === 'down') ? '-' : '+';
+                                $formatted_val = $prefix . $cleaned_val . '%';
+                            } else {
+                                $formatted_val = $raw_val;
+                            }
                             $stats_to_insert[] = [
                                 'newsletter_id' => $new_id,
                                 'label' => $label,
-                                'value' => $val['value'],
+                                'value' => $formatted_val,
                                 'direction' => $val['direction'],
                                 'sort_order' => $order++
                             ];
@@ -228,6 +248,10 @@ class Newsletters extends Admin_Controller {
                     }
                 }
             }
+
+            // Clear stats cache
+            $this->load->driver('cache', array('adapter' => 'file'));
+            $this->cache->delete('dashboard_stats');
 
             $this->session->set_flashdata('success', 'Newsletter berhasil dibuat.');
             redirect('newsletters?portal=' . $portal);
@@ -269,6 +293,11 @@ class Newsletters extends Admin_Controller {
     public function delete($id)
     {
         $this->Newsletter_model->delete($id);
+        
+        // Clear stats cache
+        $this->load->driver('cache', array('adapter' => 'file'));
+        $this->cache->delete('dashboard_stats');
+
         $this->session->set_flashdata('success', 'Newsletter berhasil dihapus.');
         redirect('newsletters');
     }

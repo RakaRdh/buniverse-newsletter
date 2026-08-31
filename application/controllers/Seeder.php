@@ -567,4 +567,315 @@ class Seeder extends CI_Controller {
         echo "<p>3 Portal default newsletters (BeritaSatu, Investor, JakartaGlobe) and 40 history logs have been seeded into the database with Cloud URL paths.</p>";
         echo "<a href='" . base_url('newsletters') . "'>Back to Dashboard</a>";
     }
+
+    private function clear_collection($db, $db_id, $collection_id)
+    {
+        try {
+            $res = $db->listDocuments($db_id, $collection_id, [\Appwrite\Query::limit(100)]);
+            $res_arr = $res->toArray();
+            foreach ($res_arr['documents'] as $doc) {
+                $db->deleteDocument($db_id, $collection_id, $doc['$id']);
+            }
+        } catch (\Exception $e) {
+            log_message('error', "Failed clearing $collection_id: " . $e->getMessage());
+        }
+    }
+
+    public function appwrite()
+    {
+        // Prevent script timeout (unlimited execution time)
+        set_time_limit(0);
+
+        $db = $this->appwrite_client->get_databases();
+        $db_id = $this->appwrite_client->get_db_id();
+
+        echo "<h2>Starting Appwrite Seeder (All Data)...</h2>";
+
+        // 1. Clear existing collections to prevent duplicate key conflicts
+        $collections = ['subscribers', 'newsletters', 'newsletter_articles', 'market_stats', 'newsletter_send_logs', 'newsletter_send_recipients', 'admins'];
+        foreach ($collections as $col) {
+            echo "Clearing existing documents in '{$col}'... ";
+            $this->clear_collection($db, $db_id, $col);
+            echo "<span style='color:green;'>DONE</span><br>";
+        }
+
+        echo "<hr>";
+
+        // 2. Seed Admins
+        try {
+            echo "Seeding admin account... ";
+            $db->createDocument($db_id, 'admins', 'admin_1', [
+                'username' => 'admin',
+                'password' => '123',
+                'name' => 'Super Admin'
+            ]);
+            echo "<span style='color:green;'>SUCCESS</span><br>";
+        } catch (\Exception $e) {
+            echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+        }
+
+        // 3. Seed Subscribers
+        $subscribers = [
+            ['id' => 'sub1', 'name' => 'Raka Herdika', 'email' => 'raka.herdika.ramadhan.tik23@stu.pnj.ac.id', 'status' => 'active'],
+            ['id' => 'sub2', 'name' => 'Raka Ramadhan', 'email' => 'rakaramadh15@gmail.com', 'status' => 'active'],
+            ['id' => 'sub3', 'name' => 'Dapa Opodapa', 'email' => 'opodapanur@gmail.com', 'status' => 'active'],
+            ['id' => 'sub4', 'name' => 'Kikil Masdapa', 'email' => 'kikilmasdapa@gmail.com', 'status' => 'active'],
+            ['id' => 'sub5', 'name' => 'Ayam Bakar Masdapa', 'email' => 'ayambakarmasdapa@gmail.com', 'status' => 'active'],
+            ['id' => 'sub6', 'name' => 'Budi Santoso', 'email' => 'budi.santoso@yahoo.com', 'status' => 'active'],
+            ['id' => 'sub7', 'name' => 'Siti Aminah', 'email' => 'siti.aminah@hotmail.com', 'status' => 'active'],
+            ['id' => 'sub8', 'name' => 'Andi Wijaya', 'email' => 'andi.wijaya@outlook.com', 'status' => 'active'],
+            ['id' => 'sub9', 'name' => 'Dewi Lestari', 'email' => 'dewi.lestari@gmail.com', 'status' => 'active'],
+            ['id' => 'sub10', 'name' => 'Eko Prasetyo', 'email' => 'eko.prasetyo@gmail.com', 'status' => 'inactive']
+        ];
+
+        foreach ($subscribers as $sub) {
+            try {
+                echo "Seeding subscriber: {$sub['email']}... ";
+                $id = $sub['id'];
+                unset($sub['id']);
+                $db->createDocument($db_id, 'subscribers', $id, $sub);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 4. Seed Newsletters
+        $newsletters = [
+            'nl1' => [
+                'portal' => 'beritasatu',
+                'subject' => 'Daily digest - Edisi 01: Asap Karhutla Ganggu Penerbangan',
+                'volume' => 1,
+                'greeting_title' => 'Sahabat Beritasatu, [Nama Subscriber]',
+                'greeting_body' => "Banyak hal terjadi hari ini dan kami sudah merangkumnya untuk Anda. Simak berita-berita pilihan berikut, lengkap dengan sudut pandang yang tajam dan terpercaya.\n\nJangan lewatkan juga artikel eksklusif kami di bagian bawah newsletter ini.",
+                'status' => 'sent',
+                'sent_at' => date('c', strtotime('-1 day'))
+            ],
+            'nl2' => [
+                'portal' => 'investor',
+                'subject' => 'Investor briefing Vol 1',
+                'volume' => 1,
+                'greeting_title' => '',
+                'greeting_body' => 'Pasar bergerak positif pagi ini. IHSG menguat 0,5% didorong sentimen global yang membaik, rupiah sedikit tertekan 0,2% terhadap dolar AS.',
+                'status' => 'draft'
+            ],
+            'nl3' => [
+                'portal' => 'jakartaglobe',
+                'subject' => 'JakartaGlobe Weekly Edition 1',
+                'volume' => 1,
+                'greeting_title' => 'Dear Readers,',
+                'greeting_body' => 'Welcome to the first edition of Jakarta Globe weekly digest.',
+                'status' => 'sent',
+                'sent_at' => date('c', strtotime('-3 days'))
+            ]
+        ];
+
+        foreach ($newsletters as $id => $nl) {
+            try {
+                echo "Seeding newsletter: {$nl['subject']}... ";
+                $db->createDocument($db_id, 'newsletters', $id, $nl);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 5. Seed Market Stats (for Investor nl2)
+        $stats = [
+            ['label' => 'IHSG', 'value' => '+0.5%', 'direction' => 'up', 'sort_order' => 1],
+            ['label' => 'USD/IDR', 'value' => '-0.2%', 'direction' => 'down', 'sort_order' => 2],
+            ['label' => 'EMAS', 'value' => '+0.3%', 'direction' => 'up', 'sort_order' => 3],
+            ['label' => 'BTC', 'value' => '+2.1%', 'direction' => 'up', 'sort_order' => 4],
+        ];
+
+        foreach ($stats as $idx => $st) {
+            try {
+                echo "Seeding market stat {$st['label']}... ";
+                $st['newsletter_id'] = 'nl2';
+                $db->createDocument($db_id, 'market_stats', 'stat_' . ($idx + 1), $st);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 6. Seed Newsletter Articles
+        $articles = [
+            // BeritaSatu
+            [
+                'newsletter_id' => 'nl1', 'article_type' => 'main',
+                'title' => 'Asap Karhutla Ganggu Penerbangan, Sejumlah Rute di Kalimantan Terdampak',
+                'excerpt' => 'Asap tebal menyebabkan gangguan penerbangan di Bandara Singkawang, Kalimantan Barat.',
+                'category' => '1 Fokus Topik', 'sort_order' => 1,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-art1.jpg'
+            ],
+            [
+                'newsletter_id' => 'nl1', 'article_type' => 'grid',
+                'title' => 'Karhutla di Tengah El Nino Bisa Picu Kerugian Ekonomi Berantai',
+                'excerpt' => 'Kebakaran hutan dan lahan (karhutla) berpotensi menimbulkan dampak ekonomi yang jauh lebih besar.',
+                'category' => 'Nasional', 'sort_order' => 2,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-art2.jpg'
+            ],
+            [
+                'newsletter_id' => 'nl1', 'article_type' => 'grid',
+                'title' => '1.923 Hotspot Karhutla Kepung Papua Tengah, Nabire Paling Banyak',
+                'excerpt' => 'Badan Meteorologi, Klimatologi dan Geofisika (BMKG) mencatat 1.923 titik panas.',
+                'category' => 'Nasional', 'sort_order' => 3,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/beritasatu-art3.jpg'
+            ],
+            // Investor
+            [
+                'newsletter_id' => 'nl2', 'article_type' => 'main',
+                'title' => 'IHSG Menanjak Lagi, 5 Saham Melejit Tinggi',
+                'excerpt' => 'Lima saham mencatatkan kenaikan tajam pada perdagangan Senin (24/8), dipimpin oleh PICO.',
+                'category' => 'Market', 'sort_order' => 1,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/investor-art1.jpg'
+            ],
+            [
+                'newsletter_id' => 'nl2', 'article_type' => 'list',
+                'title' => 'Rupiah Melemah Tipis ke Rp15.720 per USD - Market',
+                'excerpt' => '', 'category' => 'Market', 'sort_order' => 2, 'image_url' => ''
+            ],
+            // JakartaGlobe
+            [
+                'newsletter_id' => 'nl3', 'article_type' => 'main',
+                'title' => 'Indonesia Aims for 8% GDP Growth Under Prabowo',
+                'excerpt' => 'President Prabowo Subianto is optimistic that Indonesia can achieve an 8 percent economic growth rate.',
+                'category' => 'Business', 'sort_order' => 1,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-art1.jpg'
+            ],
+            [
+                'newsletter_id' => 'nl3', 'article_type' => 'sidebar',
+                'title' => 'Pertamina Expands Geothermal Power Capacity',
+                'excerpt' => 'State energy firm Pertamina is boosting its geothermal power capacity to support green energy.',
+                'category' => 'Business', 'sort_order' => 2,
+                'image_url' => 'https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/jakartaglobe-art2.jpg'
+            ]
+        ];
+
+        foreach ($articles as $idx => $art) {
+            try {
+                echo "Seeding article: {$art['title']}... ";
+                $db->createDocument($db_id, 'newsletter_articles', 'art_' . ($idx + 1), $art);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 7. Seed Newsletter Send Logs
+        $logs = [
+            'log1' => [
+                'newsletter_id' => 'nl1', 'portal' => 'beritasatu',
+                'subject' => 'Daily digest - Edisi 01: Asap Karhutla Ganggu Penerbangan',
+                'volume' => 1, 'recipients_count' => 4,
+                'sent_at' => date('c', strtotime('-1 day')),
+                'content_summary' => "Main Article: Asap Karhutla Ganggu Penerbangan",
+                'sent_by' => 'Super Admin'
+            ],
+            'log2' => [
+                'newsletter_id' => 'nl3', 'portal' => 'jakartaglobe',
+                'subject' => 'JakartaGlobe Weekly Edition 1',
+                'volume' => 1, 'recipients_count' => 3,
+                'sent_at' => date('c', strtotime('-3 days')),
+                'content_summary' => "Main Article: Indonesia Aims for 8% GDP Growth Under Prabowo",
+                'sent_by' => 'Super Admin'
+            ]
+        ];
+
+        foreach ($logs as $id => $lg) {
+            try {
+                echo "Seeding send log: {$lg['subject']}... ";
+                $db->createDocument($db_id, 'newsletter_send_logs', $id, $lg);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 8. Seed Newsletter Send Recipients
+        $recipients = [
+            // For log1
+            ['send_log_id' => 'log1', 'subscriber_name' => 'Raka Herdika', 'subscriber_email' => 'raka.herdika.ramadhan.tik23@stu.pnj.ac.id', 'status' => 'success'],
+            ['send_log_id' => 'log1', 'subscriber_name' => 'Raka Ramadhan', 'subscriber_email' => 'rakaramadh15@gmail.com', 'status' => 'success'],
+            ['send_log_id' => 'log1', 'subscriber_name' => 'Kikil Masdapa', 'subscriber_email' => 'kikilmasdapa@gmail.com', 'status' => 'success'],
+            ['send_log_id' => 'log1', 'subscriber_name' => 'Ayam Bakar Masdapa', 'subscriber_email' => 'ayambakarmasdapa@gmail.com', 'status' => 'success'],
+            // For log2
+            ['send_log_id' => 'log2', 'subscriber_name' => 'Dapa Opodapa', 'subscriber_email' => 'opodapanur@gmail.com', 'status' => 'success'],
+            ['send_log_id' => 'log2', 'subscriber_name' => 'Budi Santoso', 'subscriber_email' => 'budi.santoso@yahoo.com', 'status' => 'success'],
+            ['send_log_id' => 'log2', 'subscriber_name' => 'Siti Aminah', 'subscriber_email' => 'siti.aminah@hotmail.com', 'status' => 'failed', 'error_message' => 'SMTP connection timeout']
+        ];
+
+        foreach ($recipients as $idx => $rec) {
+            try {
+                echo "Seeding recipient: {$rec['subscriber_email']}... ";
+                $db->createDocument($db_id, 'newsletter_send_recipients', 'rec_' . ($idx + 1), $rec);
+                echo "<span style='color:green;'>SUCCESS</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        // 9. Seed 25 Historical Newsletters, Articles & Logs in a Loop
+        echo "<hr><h3>Seeding 25 Historical logs & newsletters...</h3>";
+        $portals = ['beritasatu', 'investor', 'jakartaglobe'];
+        $subjects = [
+            'beritasatu' => 'Daily digest - Edisi ',
+            'investor' => 'Investor briefing Vol ',
+            'jakartaglobe' => 'Jakarta Globe Digest Vol '
+        ];
+
+        for ($i = 11; $i <= 35; $i++) {
+            $portal = $portals[$i % 3];
+            $vol = ceil($i / 3);
+            $nl_id = 'nl_seed_' . $i;
+            $log_id = 'log_seed_' . $i;
+
+            try {
+                echo "Seeding historical Vol {$vol} for {$portal}... ";
+                
+                // A. Newsletter
+                $db->createDocument($db_id, 'newsletters', $nl_id, [
+                    'portal' => $portal,
+                    'subject' => $subjects[$portal] . $vol,
+                    'volume' => $vol,
+                    'greeting_title' => $portal === 'beritasatu' ? 'Sahabat Beritasatu,' : ($portal === 'jakartaglobe' ? 'Dear Readers,' : ''),
+                    'greeting_body' => 'Auto seeded history newsletter.',
+                    'status' => 'sent',
+                    'sent_at' => date('c', strtotime("-$i days"))
+                ]);
+
+                // B. Main Article
+                $db->createDocument($db_id, 'newsletter_articles', 'art_seed_' . $i, [
+                    'newsletter_id' => $nl_id,
+                    'article_type' => 'main',
+                    'title' => "Headline Article Vol $vol ($portal)",
+                    'excerpt' => "This is a seeded historical article summary for volume $vol of $portal.",
+                    'category' => $portal === 'beritasatu' ? 'Nasional' : ($portal === 'investor' ? 'Market' : 'World'),
+                    'image_url' => "https://ifrdsavqzecxpzdoatga.supabase.co/storage/v1/object/public/newsletter-images/$portal-art1.jpg",
+                    'url' => 'https://example.com',
+                    'sort_order' => 1
+                ]);
+
+                // C. Send Log
+                $db->createDocument($db_id, 'newsletter_send_logs', $log_id, [
+                    'newsletter_id' => $nl_id,
+                    'portal' => $portal,
+                    'subject' => $subjects[$portal] . $vol,
+                    'volume' => $vol,
+                    'recipients_count' => rand(1, 3),
+                    'sent_at' => date('c', strtotime("-$i days")),
+                    'content_summary' => "Auto seeded content summary for volume $vol of $portal.",
+                    'sent_by' => 'Super Admin'
+                ]);
+
+                echo "<span style='color:green;'>DONE</span><br>";
+            } catch (\Exception $e) {
+                echo "<span style='color:red;'>FAILED: " . $e->getMessage() . "</span><br>";
+            }
+        }
+
+        echo "<h2>Appwrite Seeder Completed Successfully!</h2>";
+        echo "<a href='" . base_url('newsletters') . "'>Back to Dashboard</a>";
+    }
 }

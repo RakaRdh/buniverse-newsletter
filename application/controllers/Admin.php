@@ -20,15 +20,19 @@ class Admin extends MY_Controller {
 
     public function authenticate()
     {
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        $username = trim($this->input->post('username', TRUE));
+        $password = trim($this->input->post('password', TRUE));
 
-        if ($username === 'admin' && $password === '123') {
+        $this->load->model('Admin_model');
+        $admin = $this->Admin_model->get_by_username($username);
+
+        if ($admin && $admin['password'] === $password) {
             $this->load->library('JWT');
             $key = getenv('JWT_SECRET') ? getenv('JWT_SECRET') : 'b-universe-super-secret-key-12345!';
             
             $payload = [
-                'username' => 'admin',
+                'username' => $admin['username'],
+                'name' => $admin['name'],
                 'exp' => time() + 7200 // 2 hours expiration
             ];
             

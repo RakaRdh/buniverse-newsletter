@@ -339,7 +339,7 @@ $config['error_views_path'] = '';
 | application/cache/ directory.  Use a full server path with trailing slash.
 |
 */
-$config['cache_path'] = '';
+$config['cache_path'] = (getenv('VERCEL') == '1' || strpos(__FILE__, '/var/task') === 0) ? sys_get_temp_dir() . '/' : '';
 
 /*
 |--------------------------------------------------------------------------

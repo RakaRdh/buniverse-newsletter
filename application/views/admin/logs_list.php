@@ -73,6 +73,7 @@ function get_sort_icon($col, $current_col, $current_order) {
                     <?php endif; ?>
                     <th class="p-3 text-[11px]">Edition (Vol)</th>
                     <th class="p-3 text-[11px]">Subject</th>
+                    <th class="p-3 text-[11px]">Sent By</th>
                     <th class="p-3 text-[11px]">
                         <a href="<?= get_sort_url('recipients', $sort_col, $sort_order) ?>" class="flex items-center hover:text-accent-500 transition-all">
                             Recipients <?= get_sort_icon('recipients', $sort_col, $sort_order) ?>
@@ -84,7 +85,7 @@ function get_sort_icon($col, $current_col, $current_order) {
             <tbody class="divide-y divide-ink-150">
                 <?php if (empty($logs)): ?>
                     <tr>
-                        <td colspan="<?= $portal === 'all' ? 6 : 5 ?>" class="p-8 text-center text-ink-500">No sending history found.</td>
+                        <td colspan="<?= $portal === 'all' ? 7 : 6 ?>" class="p-8 text-center text-ink-500">No sending history found.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($logs as $log): ?>
@@ -103,6 +104,7 @@ function get_sort_icon($col, $current_col, $current_order) {
                             <?php endif; ?>
                             <td class="p-3 text-ink-900 font-semibold" style="font-variant-numeric: tabular-nums;">Vol <?= htmlspecialchars($log['volume']) ?></td>
                             <td class="p-3 text-ink-900 font-semibold"><?= htmlspecialchars($log['subject']) ?></td>
+                            <td class="p-3 text-ink-700 font-medium"><?= htmlspecialchars(isset($log['sent_by']) ? $log['sent_by'] : 'System') ?></td>
                             <td class="p-3">
                                 <span class="inline-flex items-center px-2 py-0.5 bg-[#E7EFF7] text-[#3A6FA8] rounded text-[10px] font-bold uppercase tracking-wider" style="font-variant-numeric: tabular-nums;">
                                     <?= htmlspecialchars($log['recipients_count']) ?> emails

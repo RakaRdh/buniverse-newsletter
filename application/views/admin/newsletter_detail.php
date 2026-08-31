@@ -303,6 +303,20 @@
             overflow: visible;
         }
 
+        .iframe-outer-wrapper.mobile-large {
+            width: 480px;
+            max-width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .iframe-outer-wrapper.fold {
+            width: 600px;
+            max-width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
         .iframe-scale-wrapper {
             width: 100%;
             height: auto;
@@ -403,6 +417,9 @@
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </button>
         </div>
+        <div class="p-4 text-xs font-semibold text-ink-650 bg-ink-50 border-t border-ink-150 text-center italic">
+            * Tampilan di atas adalah simulasi preview. Hasil akhir bergantung pada email client dan resolusi layar penerima masing-masing.
+        </div>
     </div>
 
     <!-- Right Area: Live HTML Preview with Viewport Switcher -->
@@ -416,14 +433,20 @@
             
             <!-- Viewport Switcher Buttons -->
             <div class="flex items-center bg-ink-50 p-1 rounded-lg border border-ink-150">
-                <button onclick="setViewport('desktop')" id="tab-desktop" class="viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
-                    <i class="fa-solid fa-desktop text-[11px]"></i> Desktop
+                <button onclick="setViewport('desktop')" id="tab-desktop" class="viewport-tab active flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-desktop text-[10px]"></i> Desktop
                 </button>
-                <button onclick="setViewport('tablet')" id="tab-tablet" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
-                    <i class="fa-solid fa-tablet-screen-button text-[11px]"></i> Tablet
+                <button onclick="setViewport('fold')" id="tab-fold" class="viewport-tab flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-tablet text-[10px]"></i> Fold (600px)
                 </button>
-                <button onclick="setViewport('mobile')" id="tab-mobile" class="viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md transition-all">
-                    <i class="fa-solid fa-mobile-screen-button text-[11px]"></i> Mobile
+                <button onclick="setViewport('tablet')" id="tab-tablet" class="viewport-tab flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-tablet-screen-button text-[10px]"></i> Tablet
+                </button>
+                <button onclick="setViewport('mobile-large')" id="tab-mobile-large" class="viewport-tab flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-mobile-screen-button text-[10px]"></i> Mobile L (480px)
+                </button>
+                <button onclick="setViewport('mobile')" id="tab-mobile" class="viewport-tab flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md transition-all">
+                    <i class="fa-solid fa-mobile-screen-button text-[10px]"></i> Mobile (375px)
                 </button>
             </div>
         </div>
@@ -474,13 +497,13 @@
             
             // Remove active classes
             tabs.forEach(tab => {
-                tab.className = 'viewport-tab flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md text-ink-700 hover:bg-ink-150 hover:text-ink-900 transition-all';
+                tab.className = 'viewport-tab flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md text-ink-700 hover:bg-ink-150 hover:text-ink-900 transition-all';
             });
             
             // Add active classes to clicked tab
             const activeTab = document.getElementById('tab-' + device);
             if (activeTab) {
-                activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-md bg-accent-500 text-white shadow-sm transition-all';
+                activeTab.className = 'viewport-tab active flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold rounded-md bg-accent-500 text-white shadow-sm transition-all';
             }
             
             // Reset iframe styles
@@ -513,6 +536,15 @@
                 iframe.style.height = docHeight + 'px';
                 scaleWrapper.style.width = '100%';
                 scaleWrapper.style.height = docHeight + 'px';
+            } else if (device === 'fold') {
+                container.style.padding = '24px';
+                container.style.backgroundColor = '#EDE9E4';
+                
+                const targetWidth = 600;
+                iframe.style.width = targetWidth + 'px';
+                iframe.style.height = docHeight + 'px';
+                scaleWrapper.style.width = targetWidth + 'px';
+                scaleWrapper.style.height = docHeight + 'px';
             } else if (device === 'tablet') {
                 container.style.padding = '24px';
                 container.style.backgroundColor = '#EDE9E4';
@@ -522,23 +554,24 @@
                 iframe.style.height = docHeight + 'px';
                 scaleWrapper.style.width = targetWidth + 'px';
                 scaleWrapper.style.height = docHeight + 'px';
+            } else if (device === 'mobile-large') {
+                container.style.padding = '24px';
+                container.style.backgroundColor = '#EDE9E4';
+                
+                const targetWidth = 480;
+                iframe.style.width = targetWidth + 'px';
+                iframe.style.height = docHeight + 'px';
+                scaleWrapper.style.width = targetWidth + 'px';
+                scaleWrapper.style.height = docHeight + 'px';
             } else if (device === 'mobile') {
                 container.style.padding = '24px';
                 container.style.backgroundColor = '#EDE9E4';
                 
                 const targetWidth = 375;
-                const emailWidth = 600;
-                const scale = targetWidth / emailWidth; // 0.625
-                
-                // Set the iframe size to unscaled dimensions
-                iframe.style.width = emailWidth + 'px';
+                iframe.style.width = targetWidth + 'px';
                 iframe.style.height = docHeight + 'px';
-                iframe.style.transform = 'scale(' + scale + ')';
-                iframe.style.transformOrigin = 'top left';
-                
-                // Set the scaleWrapper to the exact visually scaled dimensions to prevent extra whitespace
                 scaleWrapper.style.width = targetWidth + 'px';
-                scaleWrapper.style.height = (docHeight * scale) + 'px';
+                scaleWrapper.style.height = docHeight + 'px';
             }
         }
 

@@ -48,13 +48,14 @@
                             <th class="p-3 text-[11px]">Sent At</th>
                             <th class="p-3 text-[11px]">Portal</th>
                             <th class="p-3 text-[11px]">Subject</th>
+                            <th class="p-3 text-[11px]">Sent By</th>
                             <th class="p-3 text-right text-[11px]">Recipients</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-ink-150">
                         <?php if (empty($recent_logs)): ?>
                             <tr>
-                                <td colspan="4" class="p-6 text-center text-ink-500">No send logs recorded yet.</td>
+                                <td colspan="5" class="p-6 text-center text-ink-500">No send logs recorded yet.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($recent_logs as $log): ?>
@@ -73,6 +74,9 @@
                                     </td>
                                     <td class="p-3 font-semibold text-ink-900 truncate max-w-[120px]" title="<?= htmlspecialchars($log['subject']) ?>">
                                         <?= htmlspecialchars($log['subject']) ?>
+                                    </td>
+                                    <td class="p-3 text-ink-700 whitespace-nowrap">
+                                        <?= htmlspecialchars(isset($log['sent_by']) ? $log['sent_by'] : 'System') ?>
                                     </td>
                                     <td class="p-3 text-right font-medium text-ink-700 whitespace-nowrap" style="font-variant-numeric: tabular-nums;">
                                         <?= htmlspecialchars($log['recipients_count']) ?> emails

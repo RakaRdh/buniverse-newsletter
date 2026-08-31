@@ -150,7 +150,10 @@
                 <?php foreach (['IHSG', 'USD/IDR', 'EMAS', 'BTC'] as $key): ?>
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-ink-900"><?= $key ?></label>
-                        <input type="text" name="stats[<?= $key ?>][value]" class="w-full h-8 px-2.5 py-1 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-900 focus:outline-none focus:border-accent-500" placeholder="e.g. +0.5%" value="0.0%">
+                        <div class="flex items-center">
+                            <input type="text" name="stats[<?= $key ?>][value]" class="flex-1 w-full h-8 px-2.5 py-1 text-xs bg-white border border-ink-300 rounded-l-[6px] text-ink-900 focus:outline-none focus:border-accent-500" placeholder="e.g. 0.5" value="0.0">
+                            <span class="h-8 px-2.5 flex items-center bg-ink-150 border-y border-r border-ink-300 rounded-r-[6px] text-xs font-bold text-ink-605">%</span>
+                        </div>
                         <select name="stats[<?= $key ?>][direction]" class="w-full h-8 px-2 py-1 text-xs bg-white border border-ink-300 rounded-[6px] text-ink-700 focus:outline-none focus:border-accent-500">
                             <option value="up">Naik (Green)</option>
                             <option value="down">Turun (Red)</option>

@@ -65,15 +65,55 @@ class Subscribers extends Admin_Controller {
         $this->load->view('admin/subscribers_list', $data);
     }
 
-    public function toggle($id)
+    public function update_status()
     {
-        $subscriber = $this->Subscriber_model->get_by_id($id);
-        if ($subscriber) {
-            $new_status = ($subscriber['status'] === 'active') ? 'inactive' : 'active';
+        $id = $this->input->post('id', TRUE);
+        $new_status = $this->input->post('new_status', TRUE);
+
+        if ($id && in_array($new_status, ['active', 'inactive'])) {
             $this->Subscriber_model->update($id, ['status' => $new_status]);
+            
+            // Clear stats cache
+            $this->load->driver('cache', array('adapter' => 'file'));
+            $this->cache->delete('dashboard_stats');
+            
             $this->session->set_flashdata('success', 'Status subscriber berhasil diubah.');
         } else {
-            $this->session->set_flashdata('error', 'Subscriber tidak ditemukan.');
+            $this->session->set_flashdata('error', 'Gagal memperbarui status.');
+        }
+        redirect('subscribers');
+    }
+
+    public function add()
+    {
+        $name = trim($this->input->post('name', TRUE));
+        $email = trim($this->input->post('email', TRUE));
+
+        if (empty($name) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->session->set_flashdata('error', 'Nama dan email valid wajib diisi.');
+            redirect('subscribers');
+        }
+
+        // Prevent duplicates / race condition check
+        $existing = $this->Subscriber_model->get_by_email($email);
+        
+        $this->load->driver('cache', array('adapter' => 'file'));
+        $this->cache->delete('dashboard_stats');
+
+        if ($existing) {
+            if ($existing['status'] === 'inactive') {
+                $this->Subscriber_model->update($existing['id'], ['name' => $name, 'status' => 'active']);
+                $this->session->set_flashdata('success', 'Subscriber berhasil diaktifkan kembali.');
+            } else {
+                $this->session->set_flashdata('error', 'Email ini sudah terdaftar sebagai subscriber aktif.');
+            }
+        } else {
+            $this->Subscriber_model->insert([
+                'name' => $name,
+                'email' => $email,
+                'status' => 'active'
+            ]);
+            $this->session->set_flashdata('success', 'Subscriber baru berhasil ditambahkan.');
         }
         redirect('subscribers');
     }
@@ -158,6 +198,10 @@ class Subscribers extends Admin_Controller {
             $this->Subscriber_model->insert_batch($subscribers_to_insert);
             $success_count += count($subscribers_to_insert);
         }
+
+        // Clear stats cache
+        $this->load->driver('cache', array('adapter' => 'file'));
+        $this->cache->delete('dashboard_stats');
 
         $msg = "Import selesai. {$success_count} subscriber baru/diaktifkan kembali.";
         if ($duplicate_count > 0) {

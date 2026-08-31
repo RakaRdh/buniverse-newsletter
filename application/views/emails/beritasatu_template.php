@@ -25,7 +25,17 @@
         width: 100% !important;
         max-width: 100% !important;
       }
-
+    }
+    @media only screen and (max-width: 480px) {
+      .mobile-grid-td {
+        display: block !important;
+        width: 100% !important;
+        padding-bottom: 25px !important;
+        box-sizing: border-box !important;
+      }
+      .headline-table {
+        width: 100% !important;
+      }
     }
   </style>
 </head>
@@ -67,7 +77,7 @@
                 <!-- Daily Digest block -->
                 <tr>
                   <td style="padding: 22px 20px 0 21px;">
-                    <table border="0" cellpadding="0" cellspacing="0" width="559" height="75" style="border-top: 1px solid rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.3); width: 559px; height: 75px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="559" height="75" class="headline-table" style="border-top: 1px solid rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.3); width: 559px; height: 75px;">
                       <tr>
                         <td valign="top" style="padding-top: 5px; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); font-family: Arial, sans-serif;">
                           <!-- Daily Digest & Headline -->
@@ -136,9 +146,9 @@
                 <!-- Title -->
                 <tr>
                   <td style="padding-bottom: 8px;">
-                    <h2 style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
-                      <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($main_article['title']) ?></a>
-                    </h2>
+                     <h2 style="margin: 0; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #111111;">
+                       <a href="<?= !empty($main_article['url']) ? $main_article['url'] : '#' ?>" style="text-decoration: none; color: #111111;"><?= htmlspecialchars($main_article['title']) ?></a>
+                     </h2>
                   </td>
                 </tr>
                 <!-- Excerpt -->
@@ -183,7 +193,7 @@
                 ?>
                 <tr>
                   <?php foreach ($row as $colIndex => $art): ?>
-                  <td width="48%" style="width: 48%;" valign="top">
+                  <td width="48%" style="width: 48%;" valign="top" class="mobile-grid-td">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                        <?php if (!empty($art['image_url'])): ?>
                       <tr>
